@@ -1,4 +1,4 @@
-# MAISON — 3D Interactive Luxury Collection Site
+# MODUBAG — 3D Interactive Luxury Collection Site
 
 Built with **Vite + Three.js + GSAP** following a professional modular architecture.
 
