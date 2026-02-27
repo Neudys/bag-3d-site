@@ -1,0 +1,47 @@
+/* ── base.css ── Reset + CSS Variables ──────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --font-display: 'Cinzel', serif;
+  --font-body:    'Cormorant Garamond', Georgia, serif;
+  --font-ui:      'Jost', system-ui, sans-serif;
+
+  --accent:       #c8960a;
+  --bg-base:      #0d0804;
+  --text-primary: #f0e8d8;
+  --text-muted:   rgba(240, 232, 216, 0.5);
+  --border:       rgba(240, 232, 216, 0.12);
+
+  --ease-luxury: cubic-bezier(0.25, 0.1, 0.0, 1.0);
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}

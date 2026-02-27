@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MAISON — Luxury Collection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=Jost:wght@200;300;400&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+
+    <div id="loader" aria-hidden="true">
+      <div class="loader-inner">
+        <div class="loader-logo">MODUBAG</div>
+        <div class="loader-bar"><div class="loader-fill"></div></div>
+        <div class="loader-label">Loading Collection</div>
+      </div>
+    </div>
+
+    <div id="app" style="opacity:0;">
+
+      <nav id="nav">
+        <div class="nav-logo">MAISON</div>
+        <div class="nav-links">
+          <a href="#" class="nav-link">Collection</a>
+          <a href="#" class="nav-link">Atelier</a>
+          <a href="#" class="nav-link">About</a>
+        </div>
+        <div class="nav-actions">
+          <button class="nav-btn" id="btn-explore" aria-label="Explore">Explore</button>
+        </div>
+      </nav>
+
+      <section id="hero">
+
+        <div id="env-bg" aria-hidden="true">
+          <div class="env-gradient" id="env-gradient"></div>
+          <div class="env-noise" id="env-noise"></div>
+          <div class="env-vignette"></div>
+        </div>
+
+        <div class="deco-lines" aria-hidden="true">
+          <div class="deco-line deco-line--h"></div>
+          <div class="deco-line deco-line--v"></div>
+        </div>
+
+        <div id="canvas-container" role="img" aria-label="3D bag model"></div>
+
+        <aside class="hero-meta" id="hero-meta">
+          <div class="meta-tag" id="meta-tag">Collection 2025</div>
+          <h1 class="meta-title" id="meta-title">—</h1>
+          <p class="meta-desc" id="meta-desc">—</p>
+          <div class="meta-details">
+            <div class="meta-row" id="meta-material">
+              <span class="meta-key">Material</span>
+              <span class="meta-val" id="val-material">—</span>
+            </div>
+            <div class="meta-row" id="meta-origin">
+              <span class="meta-key">Origin</span>
+              <span class="meta-val" id="val-origin">—</span>
+            </div>
+          </div>
+          <button class="cta-btn" id="cta-btn">
+            <span>View Details</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </aside>
+
+        <nav class="model-nav" id="model-nav" aria-label="Model selector">
+          <div class="model-dots" id="model-dots"></div>
+          <div class="model-arrows">
+            <button class="arrow-btn" id="btn-prev" aria-label="Previous model">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13 4L7 10l6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="arrow-btn" id="btn-next" aria-label="Next model">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 4l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </nav>
+
+        <div class="scroll-hint" id="scroll-hint" aria-hidden="true">
+          <div class="scroll-line"></div>
+          <span>Scroll to explore</span>
+        </div>
+
+      </section>
+
+      <!-- <section id="scroll-stage" aria-hidden="true"></section> -->
+
+      <!-- Below-fold content -->
+      <!-- <section id="about-section">
+        <div class="about-inner">
+          <div class="about-text">
+            <p class="about-eyebrow">The Atelier</p>
+            <h2 class="about-heading">Crafted with<br /><em>intention</em></h2>
+            <p class="about-body">Each piece in the MAISON collection is a testament to the enduring art of leatherwork — slow, deliberate, and made to last generations. Our artisans bring decades of expertise to every seam, clasp, and lining.</p>
+          </div>
+          <div class="about-stats">
+            <div class="stat"><span class="stat-num">1872</span><span class="stat-label">Founded</span></div>
+            <div class="stat"><span class="stat-num">12</span><span class="stat-label">Artisans</span></div>
+            <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Handmade</span></div>
+          </div>
+        </div>
+      </section> -->
+      
+
+    </div><!-- /#app -->
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
