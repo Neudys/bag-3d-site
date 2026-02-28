@@ -1,5 +1,26 @@
 /* ── base.css ── Reset + CSS Variables ──────────────────────────────────── */
 
+/*
+  Neue Montreal @font-face — add your licensed font files here.
+  Example (if files are in /public/fonts/):
+
+  @font-face {
+    font-family: 'Neue Montreal';
+    src: url('/fonts/NeueMontreal-Light.woff2') format('woff2');
+    font-weight: 300; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Neue Montreal';
+    src: url('/fonts/NeueMontreal-Regular.woff2') format('woff2');
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Neue Montreal';
+    src: url('/fonts/NeueMontreal-Medium.woff2') format('woff2');
+    font-weight: 500; font-style: normal; font-display: swap;
+  }
+*/
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -7,17 +28,19 @@
 }
 
 :root {
-  --font-display: 'Cinzel', serif;
-  --font-body:    'Cormorant Garamond', Georgia, serif;
-  --font-ui:      'Jost', system-ui, sans-serif;
+  /* Font stacks — Neue Montreal first, then close Google Fonts fallback */
+  --font-display:  'Cinzel', serif;
+  --font-body:     'Cormorant Garamond', Georgia, serif;
+  --font-ui:       'Neue Montreal', 'Plus Jakarta Sans', system-ui, sans-serif;
 
-  --accent:       #c8960a;
-  --bg-base:      #0d0804;
-  --text-primary: #f0e8d8;
-  --text-muted:   rgba(240, 232, 216, 0.5);
-  --border:       rgba(240, 232, 216, 0.12);
+  --accent:        #8fd68a;
+  --bg-base:       #0f2010;
+  --text-primary:  #f0f8ee;
+  --text-muted:    rgba(220, 245, 218, 0.5);
+  --border:        rgba(220, 245, 218, 0.12);
 
-  --ease-luxury: cubic-bezier(0.25, 0.1, 0.0, 1.0);
+  --ease-luxury:   cubic-bezier(0.25, 0.1, 0.0, 1.0);
+  --ease-cartoon:  cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 html {

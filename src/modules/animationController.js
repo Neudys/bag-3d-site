@@ -1,6 +1,8 @@
 /**
  * modules/animationController.js
- * GSAP orchestration of the loader, hero entrance, and UI reveals.
+ *
+ * Handles: 3s loader letter bounce → blob reveal → product entrance → UI stagger.
+ * No character/meta-text logic — stripped clean.
  */
 
 import { gsap } from 'gsap'
@@ -8,104 +10,179 @@ import { modelsConfig } from '../config/modelsConfig.js'
 
 export class AnimationController {
   constructor(modelManager) {
-    this.modelManager = modelManager
+    this.modelManager  = modelManager
+    this._lettersDone  = false
+    this._loadingDone  = false
+    this._revealFn     = null
   }
 
-  /**
-   * Animate the loader progress bar.
-   * @param {number} progress 0..1
-   */
+  // ── 1. Loader letters — 3 seconds total ─────────────────────────────────
+
+  startLoaderLetters(onAllDone) {
+    const container = document.getElementById('loader-logo')
+    if (!container) { onAllDone?.(); return }
+
+    const word = 'MODUBAG'
+    container.innerHTML = ''
+
+    // Calculate per-letter delay to fill ~2.4s, last letter animation finishes at ~3s
+    const letterDuration = 0.6      // each letter's bounce (seconds)
+    const totalLetters   = word.length
+    const perLetterDelay = 0.32     // 7 letters × 0.32s = 2.24s start of last, +0.6s = ~2.84s
+
+    word.split('').forEach((ch, i) => {
+      const span = document.createElement('span')
+      span.className = 'loader-letter'
+      span.textContent = ch
+      span.style.animationDelay = `${i * perLetterDelay}s`
+      span.style.animationDuration = `${letterDuration}s`
+      container.appendChild(span)
+    })
+
+    // Letters fully done at ~3s
+    const totalMs = (totalLetters - 1) * (perLetterDelay * 1000) + (letterDuration * 1000) + 100
+    setTimeout(() => {
+      this._lettersDone = true
+      this._tryBothReady()
+      onAllDone?.()
+    }, totalMs)
+  }
+
+  // ── 2. Progress bar ──────────────────────────────────────────────────────
+
   setLoaderProgress(progress) {
     const fill = document.querySelector('.loader-fill')
-    if (fill) {
-      gsap.to(fill, { duration: 0.3, width: `${progress * 100}%`, ease: 'power1.out' })
+    if (fill) gsap.to(fill, { duration: 0.35, width: `${progress * 100}%`, ease: 'power1.out' })
+  }
+
+  markLoadingDone() {
+    this._loadingDone = true
+    this._tryBothReady()
+  }
+
+  // ── 3. Gate — both letters + loading done ────────────────────────────────
+
+  _tryBothReady() {
+    if (this._lettersDone && this._loadingDone && this._revealFn) {
+      const fn = this._revealFn
+      this._revealFn = null
+      fn()
     }
   }
 
-  /**
-   * Hide loader and reveal the app with a luxury reveal sequence.
-   * @param {function} onComplete
-   */
-  revealApp(onComplete) {
-    const loader = document.getElementById('loader')
-    const app = document.getElementById('app')
-
-    gsap.timeline({ onComplete })
-      // Fade out loader
-      .to(loader, { duration: 0.8, opacity: 0, ease: 'power2.in' })
-      .set(loader, { display: 'none' })
-      // Fade in app
-      .to(app, { duration: 0.4, opacity: 1, ease: 'power1.out' }, '-=0.1')
-      // Staggered UI entrance
-      .from('#nav', { duration: 0.7, y: -30, opacity: 0, ease: 'power3.out' }, '-=0.2')
-      .from('.hero-meta', { duration: 0.9, x: -50, opacity: 0, ease: 'power3.out' }, '-=0.4')
-      .from('.model-nav', { duration: 0.7, x: 30, opacity: 0, ease: 'power3.out' }, '<+0.1')
-      .from('.scroll-hint', { duration: 0.7, y: 20, opacity: 0, ease: 'power2.out' }, '-=0.2')
+  scheduleReveal(fn) {
+    this._revealFn = fn
+    this._tryBothReady()
   }
 
-  /**
-   * Animate the UI text panel when a model changes.
-   * @param {object} config
-   */
-  animateUIToConfig(config) {
-    const tl = gsap.timeline()
+  // ── 4. Blob reveal (two callbacks) ───────────────────────────────────────
 
-    // Fade out then update
-    tl.to(['#meta-title', '#meta-desc', '#val-material', '#val-origin', '#meta-tag'], {
-        duration: 0.3,
-        opacity: 0,
-        y: -8,
-        stagger: 0.04,
-        ease: 'power2.in'
-      })
-      .call(() => {
-        const titleEl = document.getElementById('meta-title')
-        const descEl  = document.getElementById('meta-desc')
-        const matEl   = document.getElementById('val-material')
-        const oriEl   = document.getElementById('val-origin')
-        const tagEl   = document.getElementById('meta-tag')
+  runBlobReveal(blobColor, onCovered, onUncovered) {
+    const layer = document.createElement('div')
+    layer.id = 'blob-reveal-layer'
+    Object.assign(layer.style, {
+      position: 'fixed', inset: '0', zIndex: '10000',
+      pointerEvents: 'none', overflow: 'hidden'
+    })
+    document.body.appendChild(layer)
 
-        if (titleEl) titleEl.textContent = config.name
-        if (descEl)  descEl.textContent = config.description
-        if (matEl)   matEl.textContent = config.material
-        if (oriEl)   oriEl.textContent = config.origin
-        if (tagEl)   tagEl.textContent = `Collection 2025 — ${config.id.charAt(0).toUpperCase() + config.id.slice(1)}`
+    const diag = Math.hypot(window.innerWidth, window.innerHeight)
+    const NUM  = 28
+
+    for (let i = 0; i < NUM; i++) {
+      const el = document.createElement('div')
+      const x  = Math.random() * 110 - 5
+      const y  = Math.random() * 110 - 5
+      const sz = diag * (0.8 + Math.random() * 0.6)
+      const delay = Math.random() * 0.42
+
+      Object.assign(el.style, {
+        position: 'absolute',
+        left: `${x}%`, top: `${y}%`,
+        width: '0', height: '0',
+        borderRadius: '50%',
+        background: blobColor,
+        transform: 'translate(-50%,-50%)'
       })
-      .to(['#meta-title', '#meta-desc', '#val-material', '#val-origin', '#meta-tag'], {
-        duration: 0.5,
-        opacity: 1,
-        y: 0,
-        stagger: 0.06,
-        ease: 'power3.out'
+      layer.appendChild(el)
+      gsap.to(el, { width: sz, height: sz, duration: 0.7, delay, ease: 'power2.in' })
+    }
+
+    // Covered at ~700ms
+    setTimeout(() => { onCovered?.() }, 720)
+
+    // Hold, then slide away
+    setTimeout(() => {
+      gsap.to(layer, {
+        y: '-100%', duration: 0.8, ease: 'power3.inOut',
+        onComplete: () => {
+          layer.remove()
+          onUncovered?.()
+        }
       })
+    }, 1400)
   }
 
-  /**
-   * Initialize dots UI from modelsConfig.
-   * @param {function(number)} onDotClick
-   */
+  // ── 5. Nav entrance ──────────────────────────────────────────────────────
+
+  enterNav() {
+    gsap.from('#nav', { duration: 0.8, y: -50, opacity: 0, ease: 'power3.out' })
+  }
+
+  // ── 6. Product entrance (bounce from below) ─────────────────────────────
+
+  animateProductEntrance(model, config, onComplete) {
+    if (!model) { onComplete?.(); return }
+
+    gsap.timeline()
+      .to(model.scale, {
+        x: config.modelScale, y: config.modelScale, z: config.modelScale,
+        duration: 1.1, ease: 'back.out(1.9)'
+      })
+      .to(model.position, {
+        y: config.modelPosition[1],
+        duration: 1.25, ease: 'back.out(2.2)',
+        onComplete
+      }, '<+0.05')
+  }
+
+  // ── 7. Bottom bar stagger ────────────────────────────────────────────────
+
+  enterBottomBar() {
+    gsap.timeline()
+      .from('.product-bar', { duration: 0.8, y: 60, opacity: 0, ease: 'back.out(1.6)' })
+  }
+
+  // ── Pill name update on model switch ─────────────────────────────────────
+
+  updatePillName(name) {
+    const el = document.getElementById('product-pill-name')
+    if (!el) return
+
+    gsap.timeline()
+      .to(el, { duration: 0.2, opacity: 0, y: -8, ease: 'power2.in' })
+      .call(() => { el.textContent = name })
+      .to(el, { duration: 0.4, opacity: 1, y: 0, ease: 'power3.out' })
+  }
+
+  // ── Dots ─────────────────────────────────────────────────────────────────
+
   buildModelDots(onDotClick) {
     const container = document.getElementById('model-dots')
     if (!container) return
-
     modelsConfig.forEach((cfg, i) => {
       const dot = document.createElement('button')
-      dot.classList.add('model-dot')
+      dot.className = 'model-dot' + (i === 0 ? ' is-active' : '')
       dot.setAttribute('aria-label', cfg.name)
       dot.dataset.index = i
-      if (i === 0) dot.classList.add('is-active')
       dot.addEventListener('click', () => onDotClick(i))
       container.appendChild(dot)
     })
   }
 
-  /**
-   * Update which dot is active.
-   * @param {number} index
-   */
   setActiveDot(index) {
-    document.querySelectorAll('.model-dot').forEach((dot, i) => {
-      dot.classList.toggle('is-active', i === index)
+    document.querySelectorAll('.model-dot').forEach((d, i) => {
+      d.classList.toggle('is-active', i === index)
     })
   }
 }

@@ -1,31 +1,37 @@
 /**
  * modules/scrollController.js
- * Binds ScrollTrigger to the 3D model for scroll-driven rotation and Y descent.
- * Fully reversible — scroll up returns to initial state.
+ * Scroll-driven smooth 360° rotation. Canvas is fixed via CSS.
+ * Uses GSAP ScrollTrigger for silky scrubbing.
  */
 
-import { gsap } from 'gsap'
+import { gsap }          from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
 export class ScrollController {
+  /**
+   * @param {import('./modelManager.js').ModelManager} modelManager
+   */
   constructor(modelManager) {
     this.modelManager = modelManager
-    this.trigger = null
-
-    // State for scroll-driven animation
-    this.scrollState = { rotY: 0, posY: 0 }
-    this._isMobile = window.innerWidth < 768
+    this._isMobile    = window.innerWidth < 768
   }
 
   init() {
-    // Create a tall scroll stage so user scrolls through 3D space
+    let stage = document.getElementById('scroll-stage')
+    if (!stage) {
+      stage = document.createElement('section')
+      stage.id = 'scroll-stage'
+      stage.setAttribute('aria-hidden', 'true')
+      document.getElementById('app')?.appendChild(stage)
+    }
+    stage.style.display = 'block'
+
     ScrollTrigger.create({
-      trigger: '#scroll-stage',
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: 1.2,
+      start:   0,        // from very top of page
+      end:     'max',    // to full scroll bottom
+      scrub:   2.5,      // very smooth
       onUpdate: (self) => {
         this._applyScrollProgress(self.progress)
       }
@@ -33,28 +39,24 @@ export class ScrollController {
   }
 
   /**
-   * Apply scroll progress [0..1] to the current model.
+   * Full 360° rotation so the bag returns to its starting pose.
    */
   _applyScrollProgress(progress) {
-    const model = this.modelManager.getCurrentModel()
+    const model  = this.modelManager.getCurrentModel()
     const config = this.modelManager.getCurrentConfig()
-    if (!model || !config) return
+    if (!model || !config || this.modelManager.isTransitioning) return
 
-    // Reduce animation intensity on mobile
-    const rotationRange = this._isMobile ? Math.PI * 0.6 : Math.PI * 1.2
-    const descentRange  = this._isMobile ? 0.6 : 1.2
+    const baseRotY   = config.modelRotationY
+    const fullCircle = Math.PI * 2
 
-    const targetRotY = config.modelRotationY + progress * rotationRange
-    const targetPosY = config.modelPosition[1] - progress * descentRange
+    model.rotation.y = baseRotY + progress * fullCircle
 
-    // Lerp smoothly (handled by scrub in ScrollTrigger)
-    model.rotation.y = targetRotY
-    model.position.y = targetPosY
+    // Subtle vertical float on scroll
+    const amp = this._isMobile ? 0.25 : 0.45
+    const vertOffset = Math.sin(progress * Math.PI) * amp
+    model.position.y = config.modelPosition[1] - vertOffset
   }
 
-  /**
-   * Call on resize to adapt intensity.
-   */
   onResize() {
     this._isMobile = window.innerWidth < 768
     ScrollTrigger.refresh()

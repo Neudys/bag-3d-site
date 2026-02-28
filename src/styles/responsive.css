@@ -2,121 +2,28 @@
 
 /* ─── Tablet (≤ 1024px) ────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  #nav {
-    padding: 24px 32px;
-  }
-
-  .hero-meta {
-    left: 32px;
-    max-width: 300px;
-  }
-
-  .model-nav {
-    right: 32px;
-  }
-
-  .about-inner {
-    gap: 50px;
-    padding: 80px 32px;
-  }
+  #nav { padding: 20px 28px; }
 }
 
 /* ─── Mobile (≤ 768px) ──────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   #nav {
-    padding: 20px 24px;
+    padding: 16px 20px;
+    grid-template-columns: auto 1fr auto;
   }
 
-  .nav-links {
-    display: none; /* hide on small screens */
-  }
+  .nav-center { display: none; }  /* hide center pills on mobile */
 
-  .hero-meta {
-    left: 50%;
-    top: auto;
-    bottom: 130px;
-    transform: translateX(-50%);
-    text-align: center;
-    max-width: 90vw;
-    background: rgba(8, 5, 2, 0.6);
-    backdrop-filter: blur(10px);
-    padding: 24px;
-    border: 1px solid var(--border);
-  }
+  .nav-lang { display: none; }
 
-  .meta-title {
-    font-size: 1.6rem;
-  }
+  .product-bar { bottom: 24px; gap: 14px; }
 
-  .meta-details {
-    display: none;
-  }
-
-  .cta-btn {
-    justify-content: center;
-  }
-
-  .model-nav {
-    right: 20px;
-    top: auto;
-    bottom: 40px;
-    transform: none;
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .model-dots {
-    flex-direction: row;
-    gap: 8px;
-  }
-
-  .model-arrows {
-    flex-direction: row;
-    gap: 8px;
-    margin-top: 0;
-  }
-
-  .scroll-hint {
-    display: none;
-  }
-
-  .about-inner {
-    grid-template-columns: 1fr;
-    gap: 48px;
-    padding: 80px 24px;
-  }
-
-  .about-stats {
-    flex-direction: row;
-    padding-left: 0;
-    border-left: none;
-    border-top: 1px solid var(--border);
-    padding-top: 32px;
-  }
-
-  .deco-lines {
-    display: none;
-  }
+  .arrow-circle { width: 42px; height: 42px; }
 }
 
 /* ─── Small Mobile (≤ 480px) ────────────────────────────────────────────── */
 @media (max-width: 480px) {
-  .hero-meta {
-    bottom: 100px;
-    padding: 16px;
-  }
-
-  .meta-tag {
-    font-size: 9px;
-  }
-
-  .meta-title {
-    font-size: 1.4rem;
-  }
-
-  .model-nav {
-    right: 12px;
-    bottom: 30px;
-  }
+  .nav-logo { font-size: 0.9rem; letter-spacing: 0.2em; }
+  .product-bar { bottom: 16px; }
+  .product-pill { padding: 12px 28px; }
 }

@@ -1,42 +1,32 @@
 /**
  * core/renderer.js
- * Creates the WebGLRenderer and attaches it to the DOM.
+ * Alpha-transparent renderer — CSS background shows through.
  */
-
 import * as THREE from 'three'
 
-/**
- * @param {string} containerId - DOM element id
- * @returns {THREE.WebGLRenderer}
- */
 export function createRenderer(containerId = 'canvas-container') {
   const container = document.getElementById(containerId)
   if (!container) throw new Error(`#${containerId} not found`)
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
-    alpha: false,
+    alpha: true,                      // transparent canvas
     powerPreference: 'high-performance'
   })
 
   renderer.setSize(window.innerWidth, window.innerHeight)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  renderer.setClearColor(0x000000, 0) // fully transparent clear
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
   renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.toneMapping = THREE.ACESFilmicToneMapping
-  renderer.toneMappingExposure = 1.2
+  renderer.toneMappingExposure = 1.1
 
   container.appendChild(renderer.domElement)
-
   return renderer
 }
 
-/**
- * Handle resize for renderer + camera.
- * @param {THREE.WebGLRenderer} renderer
- * @param {THREE.PerspectiveCamera} camera
- */
 export function handleRendererResize(renderer, camera) {
   camera.aspect = window.innerWidth / window.innerHeight
   camera.updateProjectionMatrix()

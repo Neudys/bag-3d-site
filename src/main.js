@@ -1,17 +1,25 @@
 /**
- * main.js
- * Entry point. Boots all modules and wires them together.
- * No business logic lives here — just composition.
+ * main.js — Boot & orchestration.
+ *
+ * SEQUENCE:
+ *  1. Loader: white screen, "MODUBAG" letters bounce in over 3s
+ *  2. Models preload in parallel
+ *  3. Both done → blob reveal covers loader in product color
+ *  4. Under cover → swap loader for app with matching bg
+ *  5. Blobs slide away → product screen revealed
+ *  6. Product bounces up from below
+ *  7. Nav + bottom bar stagger in
  */
-
 import './styles/base.css'
 import './styles/layout.css'
 import './styles/animations.css'
 import './styles/responsive.css'
 
-import { createScene }               from './core/scene.js'
-import { createCamera, updateCameraForViewport } from './core/camera.js'
-import { createRenderer, handleRendererResize }  from './core/renderer.js'
+import './core/lenis.js'
+
+import { createScene }                              from './core/scene.js'
+import { createCamera, updateCameraForViewport }    from './core/camera.js'
+import { createRenderer, handleRendererResize }     from './core/renderer.js'
 
 import { ColorTransition }       from './modules/colorTransition.js'
 import { ModelManager }          from './modules/modelManager.js'
@@ -21,64 +29,91 @@ import { InteractionController } from './modules/interactionController.js'
 
 import { modelsConfig } from './config/modelsConfig.js'
 
-// ── Bootstrap ──────────────────────────────────────────────────────────────
-
 window.addEventListener('DOMContentLoaded', () => {
-  bootstrap().catch(err => console.error('[main] Fatal init error:', err))
+  bootstrap().catch(err => console.error('[main] Fatal:', err))
 })
 
 async function bootstrap() {
-  // Core Three.js
+  // ── Core Three.js ──────────────────────────────────────────────────────
   const scene    = createScene()
   const camera   = createCamera()
+  updateCameraForViewport(camera)            // apply responsive position at startup
   const renderer = createRenderer('canvas-container')
 
-  // Modules
+  // ── Modules ────────────────────────────────────────────────────────────
   const colorTransition     = new ColorTransition(scene)
   const modelManager        = new ModelManager(scene, colorTransition)
   const animationController = new AnimationController(modelManager)
   const scrollController    = new ScrollController(modelManager)
   const interaction         = new InteractionController(modelManager)
 
-  // Model switch helper (closure — all modules in scope)
+  // ── Model switch helper ────────────────────────────────────────────────
   function switchToModel(index) {
     modelManager.goTo(index)
-    animationController.animateUIToConfig(modelsConfig[index])
+    animationController.updatePillName(modelsConfig[index].name)
     animationController.setActiveDot(index)
   }
 
-  // Preload all models with loader progress
-  await modelManager.preloadAll((progress) => {
-    animationController.setLoaderProgress(progress)
+  // ── 1. Start letter animation (3 seconds) ─────────────────────────────
+  animationController.startLoaderLetters()
+
+  // ── 2. Preload all models in parallel ──────────────────────────────────
+  await modelManager.preloadAll(p => animationController.setLoaderProgress(p))
+  animationController.markLoadingDone()
+
+  // ── 3. When BOTH are done → blob reveal ────────────────────────────────
+  animationController.scheduleReveal(() => {
+    const loader = document.getElementById('loader')
+    const app    = document.getElementById('app')
+    const cfg    = modelsConfig[0]
+
+    animationController.runBlobReveal(cfg.blobColor,
+      // onCovered — screen hidden by blobs
+      () => {
+        if (loader) { loader.style.opacity = '0'; loader.style.display = 'none' }
+        if (app) app.style.opacity = '1'
+
+        modelManager.showInitial()
+        scrollController.init()
+        interaction.init()
+
+        // Set pill name (invisible — will animate in with bar)
+        const pill = document.getElementById('product-pill-name')
+        if (pill) pill.textContent = cfg.name
+      },
+      // onUncovered — blobs slid away, colored screen visible
+      () => {
+        // Nav enters
+        animationController.enterNav()
+
+        // Product entrance from below
+        const model = modelManager.getCurrentModel()
+        animationController.animateProductEntrance(model, cfg, () => {
+          // Then stagger bottom bar
+          animationController.enterBottomBar()
+        })
+      }
+    )
   })
 
-  // Show first model then reveal app
-  modelManager.showInitial()
+  // ── Dots ───────────────────────────────────────────────────────────────
+  animationController.buildModelDots(i => switchToModel(i))
 
-  animationController.revealApp(() => {
-    scrollController.init()
-    interaction.init()
-    animationController.animateUIToConfig(modelsConfig[0])
-  })
-
-  // Build model dots
-  animationController.buildModelDots((index) => switchToModel(index))
-
-  // Button bindings
-  document.getElementById('btn-next')?.addEventListener('click', () => {
+  // ── Arrow buttons ──────────────────────────────────────────────────────
+  document.getElementById('btn-next')?.addEventListener('click', () =>
     switchToModel((modelManager.getCurrentIndex() + 1) % modelsConfig.length)
-  })
-  document.getElementById('btn-prev')?.addEventListener('click', () => {
+  )
+  document.getElementById('btn-prev')?.addEventListener('click', () =>
     switchToModel((modelManager.getCurrentIndex() - 1 + modelsConfig.length) % modelsConfig.length)
-  })
+  )
 
-  // Keyboard navigation
-  window.addEventListener('keydown', (e) => {
+  // ── Keyboard ───────────────────────────────────────────────────────────
+  window.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight') switchToModel((modelManager.getCurrentIndex() + 1) % modelsConfig.length)
     if (e.key === 'ArrowLeft')  switchToModel((modelManager.getCurrentIndex() - 1 + modelsConfig.length) % modelsConfig.length)
   })
 
-  // Resize handler
+  // ── Resize ─────────────────────────────────────────────────────────────
   window.addEventListener('resize', () => {
     handleRendererResize(renderer, camera)
     updateCameraForViewport(camera)
@@ -86,28 +121,17 @@ async function bootstrap() {
     interaction.onResize()
   })
 
-  // Render loop
+  // ── Render loop ────────────────────────────────────────────────────────
   function tick() {
     requestAnimationFrame(tick)
-    const now = performance.now()
-
-    // Gentle idle float
-    const model = modelManager.getCurrentModel()
-    if (model && !modelManager.isTransitioning) {
-      model.position.y += Math.sin(now * 0.0007) * 0.00025
-    }
-
     interaction.tick()
     renderer.render(scene, camera)
   }
-
   tick()
 
-  // DevTools
   if (import.meta.env.DEV) {
-    window.__scene    = scene
-    window.__models   = modelManager
-    window.__renderer = renderer
-    window.__switch   = switchToModel
+    window.__scene  = scene
+    window.__models = modelManager
+    window.__switch = switchToModel
   }
 }

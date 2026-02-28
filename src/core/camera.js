@@ -30,10 +30,10 @@ export function updateCameraForViewport(camera) {
 
   // Move camera closer on small screens so model stays large
   if (w < 480) {
-    camera.position.set(0, 0.2, 7.5)
+    camera.position.set(0, 0.2, 17.5)
   } else if (w < 768) {
-    camera.position.set(0, 0.3, 6.5)
+    camera.position.set(0, 0.3, 16.5)
   } else {
-    camera.position.set(0, 0.3, 5.5)
+    camera.position.set(0, 0.3, 15.5)
   }
 }

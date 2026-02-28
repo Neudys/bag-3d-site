@@ -13,9 +13,9 @@ export class InteractionController {
     this._target = { x: 0, y: 0 }
     this._isMobile = window.innerWidth < 768
 
-    // Max lean in radians
-    this._maxLeanX = 0.10
-    this._maxLeanY = 0.08
+    this._maxLeanX = 0.18   // tilt arriba/abajo
+    this._maxLeanY = 0.22   // giro izquierda/derecha
+    this._maxDrift = 0.12   // cuánto se desplaza en X/Y (units de Three.js)
 
     this._onMouseMove = this._handleMouseMove.bind(this)
     this._onTouchMove  = this._handleTouchMove.bind(this)
@@ -43,23 +43,23 @@ export class InteractionController {
    * Lerps current mouse toward target and applies lean to model.
    */
   tick() {
-    // Skip heavy effect on mobile
-    if (this._isMobile) return
+      // Skip heavy effect on mobile
+      if (this._isMobile) return
 
-    const model = this.modelManager.getCurrentModel()
-    const config = this.modelManager.getCurrentConfig()
-    if (!model || !config) return
+      const model = this.modelManager.getCurrentModel()
+      const config = this.modelManager.getCurrentConfig()
+      if (!model || !config) return
 
-    // Smooth interpolation
-    const lerpFactor = 0.06
-    this._mouse.x += (this._target.x - this._mouse.x) * lerpFactor
-    this._mouse.y += (this._target.y - this._mouse.y) * lerpFactor
+      // Smooth interpolation
+      const lerpFactor = 0.06
+      this._mouse.x += (this._target.x - this._mouse.x) * lerpFactor
+      this._mouse.y += (this._target.y - this._mouse.y) * lerpFactor
 
-    // Apply only if not mid-transition
-    if (!this.modelManager.isTransitioning) {
-      model.rotation.x = this._mouse.y * this._maxLeanX
-      // X lean adds on top of scroll-driven Y rotation — let scroll controller own rotation.y
-    }
+      // Apply only if not mid-transition
+      // Scroll controller owns rotation.y — only apply X-axis tilt here
+      if (!this.modelManager.isTransitioning) {
+        model.rotation.x = -this._mouse.y * this._maxLeanX
+      }
   }
 
   onResize() {
