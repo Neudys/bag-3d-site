@@ -135,8 +135,12 @@ export class ModelManager {
   }
 
   // ── Switch models ──────────────────────────────────────────────────────────
+  //
+  // scrollState = { rotY, rotX, rotZ, posY } from scrollController.computeModelState()
+  // When provided, the incoming model starts and ends at the exact scroll-adjusted
+  // values so there is no jump when the transition ends and scroll resumes.
 
-  goTo(index) {
+  goTo(index, scrollState = null) {
     if (this.isTransitioning)  return
     if (index === this.currentIndex) return
     if (index < 0 || index >= modelsConfig.length) return
@@ -150,23 +154,35 @@ export class ModelManager {
 
     const dir = index > this.currentIndex ? 1 : -1
 
+    // Target values for incoming model — scroll-adjusted if available
+    const tRotY = scrollState ? scrollState.rotY : nextCfg.modelRotationY
+    const tRotX = scrollState ? scrollState.rotX : 0
+    const tRotZ = scrollState ? scrollState.rotZ : 0
+    const tPosY = scrollState ? scrollState.posY : nextCfg.modelPosition[1]
+
     gsap.timeline()
-      .to(prevModel.rotation, { duration: 0.5, y: prevCfg.modelRotationY + dir * Math.PI * 0.6, ease: 'power2.in' })
+      .to(prevModel.rotation, { duration: 0.5, y: prevModel.rotation.y + dir * Math.PI * 0.6, ease: 'power2.in' })
       .to(prevModel.scale,    { duration: 0.45, x: 0, y: 0, z: 0, ease: 'power3.in' }, '<+0.1')
       .call(() => {
         this.scene.remove(prevModel)
-        prevModel.position.set(...prevCfg.modelPosition)
-        prevModel.rotation.y = prevCfg.modelRotationY
 
+        // Reset prev model to neutral (scroll will re-apply when it comes back)
+        prevModel.position.set(...prevCfg.modelPosition)
+        prevModel.rotation.set(0, prevCfg.modelRotationY, 0)
+
+        // Place incoming model at scroll-adjusted entry pose
         nextModel.scale.setScalar(0)
-        nextModel.rotation.y = nextCfg.modelRotationY - dir * Math.PI * 0.5
-        nextModel.position.set(...nextCfg.modelPosition)
+        nextModel.rotation.set(tRotX, tRotY - dir * Math.PI * 0.5, tRotZ)
+        nextModel.position.set(nextCfg.modelPosition[0], tPosY, nextCfg.modelPosition[2])
+
         this.scene.add(nextModel)
         this.currentModel = nextModel
         this.currentIndex = index
 
+        // Animate to the exact state scroll expects → zero glitch on handoff
         gsap.to(nextModel.scale,    { duration: 0.8, x: nextCfg.modelScale, y: nextCfg.modelScale, z: nextCfg.modelScale, ease: 'back.out(1.4)' })
-        gsap.to(nextModel.rotation, { duration: 0.9, y: nextCfg.modelRotationY, ease: 'power3.out' })
+        gsap.to(nextModel.rotation, { duration: 0.9, y: tRotY, x: tRotX, z: tRotZ, ease: 'power3.out' })
+        gsap.to(nextModel.position, { duration: 0.9, y: tPosY, ease: 'power3.out' })
 
         this._adaptLightsToConfig(nextCfg)
         this.colorTransition.transitionTo(nextCfg, 0.7)

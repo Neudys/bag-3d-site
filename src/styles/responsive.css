@@ -2,28 +2,42 @@
 
 /* ─── Tablet (≤ 1024px) ────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  #nav { padding: 20px 28px; }
+  #nav { padding: 18px 28px; }
+
+  .nav-pill-item { font-size: 12px; padding: 7px 14px; }
 }
 
 /* ─── Mobile (≤ 768px) ──────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  #nav {
-    padding: 16px 20px;
-    grid-template-columns: auto 1fr auto;
-  }
+  #nav { padding: 16px 20px; }
 
-  .nav-center { display: none; }  /* hide center pills on mobile */
-
+  .nav-pill-group { display: none; }
   .nav-lang { display: none; }
 
   .product-bar { bottom: 24px; gap: 14px; }
-
   .arrow-circle { width: 42px; height: 42px; }
 }
 
 /* ─── Small Mobile (≤ 480px) ────────────────────────────────────────────── */
 @media (max-width: 480px) {
-  .nav-logo { font-size: 0.9rem; letter-spacing: 0.2em; }
+  .nav-logo { font-size: 1rem; letter-spacing: 0.15em; }
   .product-bar { bottom: 16px; }
   .product-pill { padding: 12px 28px; }
+}
+/* ─── Orbit cards — Tablet ──── */
+@media (max-width: 1024px) {
+  .feature-card { width: 280px; }
+  .feature-card-title { font-size: 18px; }
+  .feature-card-text { font-size: 13px; }
+}
+
+/* ─── Orbit cards — Mobile ──── */
+@media (max-width: 768px) {
+  .feature-card { width: 220px; }
+  .feature-card-header { padding: 16px 20px 14px; }
+  .feature-card-title { font-size: 16px; }
+  .feature-card-body { padding: 16px 20px 20px; }
+  .feature-card-text { font-size: 12px; margin-bottom: 12px; }
+  .feature-card-icon { height: 60px; }
+  .feature-card-icon svg { width: 44px; height: 44px; }
 }

@@ -21,39 +21,41 @@
     <!-- ── APP ────────────────────────────────────────────────────────────── -->
     <div id="app" style="opacity:0;">
 
-      <!-- Navigation — 3-column luxury bar -->
+      <!-- Navigation — MANA style: logo left, everything right -->
       <nav id="nav">
-        <div class="nav-logo">MODU BAG</div>
+        <a href="#" class="nav-logo">MODU BAG</a>
 
-        <div class="nav-center">
+        <div class="nav-right">
           <div class="nav-pill-group">
             <a href="#" class="nav-pill-item">
               Collection
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 4L5 6.5L7.5 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 3.5L5 6L7.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
             <a href="#" class="nav-pill-item">
               Atelier
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 4L5 6.5L7.5 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 3.5L5 6L7.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
-            <a href="#" class="nav-pill-item nav-pill-item--solid">About</a>
-          </div>
-        </div>
+            <a href="#" class="nav-pill-item">About</a>
+          
 
-        <div class="nav-right">
-          <span class="nav-lang">En</span>
-          <button class="nav-icon-btn" aria-label="Account">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/>
-              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            </svg>
-          </button>
-          <button class="nav-icon-btn" aria-label="Cart">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="1.8"/>
-              <path d="M16 10a4 4 0 01-8 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
+          
+            <button class="nav-icon-btn" aria-label="Account">
+              <p>En</p>
+            </button>
+            <button class="nav-icon-btn" aria-label="Account">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <button class="nav-icon-btn" aria-label="Cart">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M16 10a4 4 0 01-8 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -92,6 +94,94 @@
 
       <!-- Scroll stage — drives 360° rotation -->
       <section id="scroll-stage" aria-hidden="true"></section>
+
+      <!-- ── Features Orbit — sticky section, cards orbit the bag ──────── -->
+      <div class="features-scroll-track">
+        <section id="features-orbit" aria-label="Características del producto">
+          <div class="orbit-bg"></div>
+          <div class="orbit-wrapper">
+            <div class="orbit-ring">
+
+              <!-- Card 1 -->
+              <article class="feature-card">
+                <div class="feature-card-header">
+                  <h3 class="feature-card-title">Modular</h3>
+                </div>
+                <div class="feature-card-body">
+                  <p class="feature-card-text">Intercambia módulos para personalizar tu mochila al instante según cada aventura.</p>
+                  <div class="feature-card-icon">
+                    <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="2" y="2" width="27" height="27" rx="6" fill="#6daa6a" opacity="0.4"/>
+                      <rect x="39" y="2" width="27" height="27" rx="6" fill="#6daa6a" opacity="0.65"/>
+                      <rect x="2" y="39" width="27" height="27" rx="6" fill="#6daa6a" opacity="0.65"/>
+                      <rect x="39" y="39" width="27" height="27" rx="6" fill="#6daa6a"/>
+                      <line x1="34" y1="2" x2="34" y2="66" stroke="#6daa6a" stroke-width="1.5" opacity="0.3"/>
+                      <line x1="2" y1="34" x2="66" y2="34" stroke="#6daa6a" stroke-width="1.5" opacity="0.3"/>
+                    </svg>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Card 2 -->
+              <article class="feature-card">
+                <div class="feature-card-header">
+                  <h3 class="feature-card-title">Impermeable</h3>
+                </div>
+                <div class="feature-card-body">
+                  <p class="feature-card-text">Materiales de alta resistencia que protegen tu contenido en cualquier clima.</p>
+                  <div class="feature-card-icon">
+                    <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M34 4 L8 22 L8 46 C8 55.9 20 64 34 64 C48 64 60 55.9 60 46 L60 22 Z" fill="#6daa6a" opacity="0.7"/>
+                      <path d="M22 44 Q27 37 34 35 Q41 37 46 44" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.9"/>
+                      <circle cx="34" cy="26" r="5" fill="white" opacity="0.5"/>
+                    </svg>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Card 3 -->
+              <article class="feature-card">
+                <div class="feature-card-header">
+                  <h3 class="feature-card-title">Expandible</h3>
+                </div>
+                <div class="feature-card-body">
+                  <p class="feature-card-text">Crece con tus necesidades, desde el día a día hasta la expedición más larga.</p>
+                  <div class="feature-card-icon">
+                    <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M42 4 L64 4 L64 26" stroke="#6daa6a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M64 4 L38 30" stroke="#6daa6a" stroke-width="3.5" stroke-linecap="round"/>
+                      <path d="M26 64 L4 64 L4 42" stroke="#6daa6a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M4 64 L30 38" stroke="#6daa6a" stroke-width="3.5" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Card 4 -->
+              <article class="feature-card">
+                <div class="feature-card-header">
+                  <h3 class="feature-card-title">Premium</h3>
+                </div>
+                <div class="feature-card-body">
+                  <p class="feature-card-text">Materiales de primera calidad, costuras reforzadas y herrajes duraderos. Hecha para siempre.</p>
+                  <div class="feature-card-icon">
+                    <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <polygon points="34,4 41,25 64,25 46,39 53,60 34,47 15,60 22,39 4,25 27,25" fill="#6daa6a" opacity="0.75"/>
+                      <polygon points="34,14 39,28 54,28 42,37 47,51 34,43 21,51 26,37 14,28 29,28" fill="white" opacity="0.3"/>
+                    </svg>
+                  </div>
+                </div>
+              </article>
+
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ── Box Section — 3D gift box reveals the bag ─────────────────── -->
+      <div class="box-scroll-track">
+        <section id="box-section" aria-label="Product box reveal"></section>
+      </div>
 
     </div>
 

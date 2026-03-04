@@ -26,6 +26,8 @@ import { ModelManager }          from './modules/modelManager.js'
 import { AnimationController }   from './modules/animationController.js'
 import { ScrollController }      from './modules/scrollController.js'
 import { InteractionController } from './modules/interactionController.js'
+import { initOrbitSection }      from './modules/orbitSection.js'
+import { initBoxSection }        from './modules/boxSection.js'
 
 import { modelsConfig } from './config/modelsConfig.js'
 
@@ -49,7 +51,12 @@ async function bootstrap() {
 
   // ── Model switch helper ────────────────────────────────────────────────
   function switchToModel(index) {
-    modelManager.goTo(index)
+    // Pass current scroll state so the incoming model enters at the right pose
+    const scrollState = scrollController.computeModelState(
+      modelsConfig[index],
+      scrollController.getProgress()
+    )
+    modelManager.goTo(index, scrollState)
     animationController.updatePillName(modelsConfig[index].name)
     animationController.setActiveDot(index)
   }
@@ -75,6 +82,8 @@ async function bootstrap() {
 
         modelManager.showInitial()
         scrollController.init()
+        initOrbitSection()
+        initBoxSection(scene)
         interaction.init()
 
         // Set pill name (invisible — will animate in with bar)

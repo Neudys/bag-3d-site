@@ -44,83 +44,117 @@
 /* ─── App shell ───────────────────────────────────────────────────────── */
 #app { position: relative; }
 
-/* ─── Navigation ──────────────────────────────────────────────────────── */
+
+/* ═════════════════════════════════════════════════════════════════════════
+   NAVIGATION — MANA replica
+   Logo far-left  |  pill-group + "En" + icon-buttons far-right
+   ═════════════════════════════════════════════════════════════════════════ */
+
 #nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
   align-items: center;
-  padding: 20px 40px;
+  justify-content: space-between;
+  padding: 22px 40px;
   pointer-events: none;
 }
+
 #nav > * { pointer-events: auto; }
 
+/* ── Logo — bold, white, chunky like MANA ─────────────────────────────── */
 .nav-logo {
   font-family: var(--font-ui);
-  font-size: 1.05rem; font-weight: 600;
-  letter-spacing: 0.35em;
+  font-size: clamp(1.2rem, 2.2vw, 1.65rem);
+  font-weight: 800;
+  letter-spacing: 0.22em;
   color: #ffffff;
+  text-transform: uppercase;
+  line-height: 1;
 }
 
-.nav-center {
-  display: flex; justify-content: center;
-}
 
-.nav-right {
-  display: flex; align-items: center; justify-content: flex-end; gap: 8px;
-}
 
-/* Pill container (MANA-style grouped nav) */
-.nav-pill-group {
-  display: flex; gap: 2px; align-items: center;
-  background: rgba(255,255,255,0.72);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-radius: 60px;
-  padding: 7px 10px;
-  border: 1px solid rgba(255,255,255,0.55);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-}
+  /* ── Frosted pill group ────────────────────────────────── */
+  .nav-pill-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 100px;
+    padding: 7px;
+  }
 
-.nav-pill-item {
-  font-family: var(--font-ui);
-  font-size: 12px; font-weight: 400;
-  letter-spacing: 0.05em;
-  color: #1a1a1a;
-  padding: 6px 18px;
-  border-radius: 60px;
-  transition: background 0.2s ease;
-  display: flex; align-items: center; gap: 4px;
-}
-.nav-pill-item:hover { background: rgba(0,0,0,0.07); }
+  /* ── Individual pill links ─────────────────────────────── */
+  .nav-pill-item {
+    background-color: white;
+    color: #111111;
+    font-weight: 500;
+    font-family: var(--font-ui);
+    font-size: 18px;
+    padding: 14px 30px;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap;
+    text-decoration: none;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    border: none;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
 
-.nav-pill-item--solid {
-  background: #1a1a1a;
-  color: #fff;
-}
-.nav-pill-item--solid:hover { background: #333; }
+  .nav-pill-item:hover {
+    animation: bounceIn 0.45s ease;
+  }
 
-.nav-lang {
-  font-family: var(--font-ui);
-  font-size: 12px; font-weight: 400;
-  letter-spacing: 0.05em;
-  color: #fff;
-  padding: 6px 10px;
-}
+  .nav-pill-item svg {
+    flex-shrink: 0;
+    opacity: 0.5;
+  }
 
-.nav-icon-btn {
-  width: 40px; height: 40px;
-  background: rgba(255,255,255,0.72);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: #1a1a1a;
-  border: 1px solid rgba(255,255,255,0.55);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-.nav-icon-btn:hover { transform: scale(1.08); background: rgba(255,255,255,0.92); }
+  .nav-icon-btn {
+    width: 52px;
+    height: 52px;
+    background-color: white;
+    color: #111111;
+    font-family: var(--font-ui);
+    border-radius: 50%;
+    font-size: 17px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .nav-icon-btn:hover {
+    animation: bounceIn 0.45s ease;
+  }
+
+  .nav-icon-btn svg {
+    width: 24px;
+    height: 24px;
+    color: var(--text-dark);
+  }
+
+  /* ── Bounce animation ──────────────────────────────────── */
+  @keyframes bounceIn {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.12); }
+    60%  { transform: scale(0.96); }
+    80%  { transform: scale(1.04); }
+    100% { transform: scale(1); }
+  }
+
 
 /* ─── Hero ─────────────────────────────────────────────────────────────── */
 #hero {
@@ -207,3 +241,123 @@
 
 /* ─── Scroll stage ──────────────────────────────────────────────────────── */
 #scroll-stage { height: 300vh; pointer-events: none; }
+
+/* ─── Features Orbit Section ────────────────────────────────────────────── */
+
+.features-scroll-track {
+  position: relative;
+  height: 500vh;
+}
+
+#features-orbit {
+  position: sticky;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ── White dome — starts OFF-SCREEN below, GSAP moves it up + rounds it ── */
+.orbit-bg {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: 0;
+  height: 90%;
+  background: #ffffff;
+  border-radius: 6% 6% 0 0 / 2% 2% 0 0;  /* semi-flat initial */
+  box-shadow: 0 -8px 50px rgba(0, 0, 0, 0.05);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform, border-radius;
+  transform: translateY(105%);  /* hidden below viewport */
+}
+
+/* Orbit anchor: center-bottom */
+.orbit-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8vh;
+  z-index: 1;
+}
+
+.orbit-ring {
+  position: relative;
+  width: 0;
+  height: 0;
+  will-change: transform;
+}
+
+/* ── Feature card ─────────────────────────────────────────────────────── */
+.feature-card {
+  position: absolute;
+  width: 340px;
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.10),
+    0 3px 10px  rgba(0, 0, 0, 0.05);
+  will-change: transform, opacity;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.feature-card-header {
+  background: #1a3020;
+  padding: 22px 26px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card-header::after {
+  content: '';
+  position: absolute;
+  bottom: -18px;
+  right: -10px;
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.feature-card-title {
+  font-family: var(--font-ui);
+  font-size: 22px;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.1;
+}
+
+/* White body */
+.feature-card-body {
+  background: #ffffff;
+  padding: 22px 26px 26px;
+}
+
+.feature-card-text {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 400;
+  color: #444444;
+  line-height: 1.65;
+  margin: 0 0 18px;
+}
+
+/* Centered SVG illustration */
+.feature-card-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 84px;
+}
