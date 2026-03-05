@@ -49,8 +49,17 @@ export class InteractionController {
     this._target.y = -((e.touches[0].clientY / window.innerHeight) * 2 - 1)
   }
 
+  /** Congela la interacción — usado por boxAnimationSection */
+  disable() {
+    this._disabled = true
+    // Resetear lean para que al re-activar no haya valores residuales
+    this._leanX = 0
+    this._leanY = 0
+  }
+  enable() { this._disabled = false }
+
   tick() {
-    if (this._isMobile) return
+    if (this._isMobile || this._disabled) return
 
     const model  = this.modelManager.getCurrentModel()
     const config = this.modelManager.getCurrentConfig()

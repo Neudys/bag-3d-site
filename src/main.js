@@ -26,8 +26,9 @@ import { ModelManager }          from './modules/modelManager.js'
 import { AnimationController }   from './modules/animationController.js'
 import { ScrollController }      from './modules/scrollController.js'
 import { InteractionController } from './modules/interactionController.js'
-import { initOrbitSection }      from './modules/orbitSection.js'
-import { initBoxSection }        from './modules/boxSection.js'
+import { initOrbitSection }        from './modules/orbitSection.js'
+import { initBoxSection }          from './modules/boxSection.js'
+import { initBoxAnimationSection } from './modules/boxAnimationSection.js'
 
 import { modelsConfig } from './config/modelsConfig.js'
 
@@ -83,7 +84,9 @@ async function bootstrap() {
         modelManager.showInitial()
         scrollController.init()
         initOrbitSection()
-        initBoxSection(scene)
+        const box = initBoxSection(scene)
+        initBoxAnimationSection(camera, modelManager, scrollController, interaction, box)
+        if (import.meta.env.DEV) window.__box = box
         interaction.init()
 
         // Set pill name (invisible — will animate in with bar)
@@ -142,5 +145,9 @@ async function bootstrap() {
     window.__scene  = scene
     window.__models = modelManager
     window.__switch = switchToModel
+    // Acceso a la caja desde consola:
+    //   __box.rise()       __box.lower()
+    //   __box.openLid()    __box.closeLid()
+    //   __box.setLidAngle(0.5)   __box.setPosition(x,y,z)
   }
 }

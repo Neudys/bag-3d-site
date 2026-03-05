@@ -36,9 +36,7 @@
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 3.5L5 6L7.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
             <a href="#" class="nav-pill-item">About</a>
-          
 
-          
             <button class="nav-icon-btn" aria-label="Account">
               <p>En</p>
             </button>
@@ -97,8 +95,12 @@
 
       <!-- ── Features Orbit — sticky section, cards orbit the bag ──────── -->
       <div class="features-scroll-track">
-        <section id="features-orbit" aria-label="Características del producto">
+        <section id="features-orbit"
+                 data-curved-text="BEBIDA ENERGETICA SUPER BUENA"
+                 aria-label="Características del producto">
+
           <div class="orbit-bg"></div>
+
           <div class="orbit-wrapper">
             <div class="orbit-ring">
 
@@ -183,6 +185,13 @@
         <section id="box-section" aria-label="Product box reveal"></section>
       </div>
 
+      <!-- ── Box Animation — scroll-driven keyframe sequence ──────────── -->
+      <div class="box-anim-scroll-track">
+        <!-- sticky: ocupa 100vh mientras el track desplaza  -->
+        <section id="box-animation-in-box" class="box-animation-in-box">
+          
+        </section>
+      </div>
     </div>
 
     <script type="module" src="/src/main.js"></script>

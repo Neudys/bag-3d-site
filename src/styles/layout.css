@@ -186,6 +186,13 @@
   position: fixed; bottom: 38px; left: 0; right: 0;
   z-index: 10;
   display: flex; align-items: center; justify-content: center; gap: 22px;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity  0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.product-bar--hidden {
+  transform: translateY(120%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .product-bar-center {
@@ -360,4 +367,40 @@
   justify-content: center;
   align-items: center;
   height: 84px;
+}
+
+/* ─── Box Animation Section ─────────────────────────────────────────────── */
+
+/* Scroll track: altura fijada por JS (boxAnimationConfig.scrollHeight) */
+.box-anim-scroll-track {
+  position: relative;
+  /* height se aplica desde JS */
+}
+
+/* Sección sticky: permanece 100vh en pantalla mientras el track desplaza */
+#box-animation-in-box {
+  background: #fff;
+  position: sticky;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* Contenido de texto opcional dentro de la sección */
+#box-animation-in-box h1 {
+  font-family: var(--font-ui);
+  font-size: clamp(2rem, 6vw, 5rem);
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.1em;
+  text-align: center;
+  pointer-events: none;
+  user-select: none;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.18);
 }

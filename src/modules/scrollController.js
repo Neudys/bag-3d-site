@@ -41,9 +41,25 @@ export class ScrollController {
         this._applyScrollProgress(self.progress)
       },
     })
+
+    // Ocultar la paleta de selección al salir del top, mostrarla al volver
+    const bar = document.getElementById('product-bar')
+    if (bar) {
+      ScrollTrigger.create({
+        trigger:     '#scroll-stage',
+        start:       'top bottom',   // en cuanto el usuario empieza a bajar
+        onEnter:     () => bar.classList.add('product-bar--hidden'),
+        onLeaveBack: () => bar.classList.remove('product-bar--hidden'),
+      })
+    }
   }
 
+  /** Congela esta animación — usado por boxAnimationSection */
+  disable() { this._disabled = true  }
+  enable()  { this._disabled = false }
+
   _applyScrollProgress(p) {
+    if (this._disabled) return
     const model  = this.modelManager.getCurrentModel()
     const config = this.modelManager.getCurrentConfig()
     if (!model || !config || this.modelManager.isTransitioning) return

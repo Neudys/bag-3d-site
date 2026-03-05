@@ -68,3 +68,101 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+
+/* ── orbit-curved-text.css ── Add these rules to layout.css ────────────── */
+
+/* Curved SVG text — arches above the orbit center inside the dome */
+.orbit-curved-text {
+  position: absolute;
+  bottom: 2vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 78vw;
+  max-width: 860px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;            /* faded in by JS */
+  will-change: opacity;
+}
+
+.orbit-curved-text text {
+  font-family: var(--font-ui);
+  font-size: 52px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  fill: #1a3020;
+}
+
+/* ─── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .orbit-curved-text {
+    width: 88vw;
+    max-width: 700px;
+  }
+  .orbit-curved-text text {
+    font-size: 38px;
+    letter-spacing: 0.14em;
+  }
+}
+
+@media (max-width: 768px) {
+  .orbit-curved-text {
+    width: 94vw;
+    max-width: 500px;
+    bottom: 1vh;
+  }
+  .orbit-curved-text text {
+    font-size: 26px;
+    letter-spacing: 0.10em;
+  }
+}
+
+@media (max-width: 480px) {
+  .orbit-curved-text text {
+    font-size: 20px;
+    letter-spacing: 0.08em;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+   APPEND THESE RULES TO THE END OF layout.css
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Curved arc text — sits inside the dome, above orbit center ────────── */
+.orbit-curved-text {
+  position: absolute;
+  bottom: 4vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80vw;
+  max-width: 880px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.orbit-curved-text text {
+  font-family: var(--font-ui);
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  fill: #1a3020;
+}
+
+/* ─── Tablet ──── */
+@media (max-width: 1024px) {
+  .orbit-curved-text { width: 90vw; max-width: 700px; }
+  .orbit-curved-text text { font-size: 36px; letter-spacing: 0.15em; }
+}
+
+/* ─── Mobile ──── */
+@media (max-width: 768px) {
+  .orbit-curved-text { width: 96vw; max-width: 500px; bottom: 2vh; }
+  .orbit-curved-text text { font-size: 24px; letter-spacing: 0.10em; }
+}
+
+@media (max-width: 480px) {
+  .orbit-curved-text text { font-size: 18px; letter-spacing: 0.08em; }
+}
+}
