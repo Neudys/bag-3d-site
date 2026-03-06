@@ -61,27 +61,27 @@ export const boxAnimationConfig = {
 
       model: {
         position: [
-          [0, -5.0,  0],     // KF0
-          [0, -5.0,  0],     // KF1 — sube la caja, bolsa queda abajo
-          [0, -5.0,  0],     // KF2
-          [0, -5.0,  0],     // KF3 — caja abierta alrededor de la bolsa
-          [0, -5.0,  0],     // KF4
-          [0, -5.0,  0],     // KF5
-          [0, -5.0,  0],     // KF6
-          [0, -5.0,  0],     // KF7
+          [0, -5.0,  0],    // KF0
+          [0, -5.0,  0],    // KF1 — sube la caja, bolsa queda abajo
+          [0, -5.0,  0],    // KF2
+          [0, -5.0,  0],    // KF3 — caja abierta alrededor de la bolsa
+          [0, -5.0, 0],     // KF4
+          [0, -8.0, 0],     // KF5 — empieza a bajar
+          [0, -23.0, 0],    // KF6
+          [0, -33.0, 0],    // KF7
         ],
         rotation: [
           [0,  0,              0],  // KF0 — sin rotación
-          [0,  0,              0],  // KF1
           [0,  Math.PI * 0.25, 0],  // KF2 —  45° derecha
           [0,  Math.PI * 0.5,  0],  // KF3 —  90° derecha
           [0,  Math.PI * 0.75, 0],  // KF4 — 135° derecha
-          [0,  Math.PI,        0],  // KF5 — 180° derecha
-          [0,  Math.PI,        0],  // KF6
-          [0,  Math.PI,        0],  // KF7
+          [0,  Math.PI * 0.75, 0],
+          [0,  Math.PI * 0.75, 0],
+          [0,  Math.PI * 0.75, 0],
+          [0,  Math.PI * 0.75, 0],
         ],
         //        KF0   KF1   KF2   KF3   KF4   KF5   KF6   KF7
-        scale: [  3.2,  3.2,  3.2,  3.2,  3.2,  3.2,  3.2,  3.2 ],
+        scale: [  3.2,  3.2,  3.2,  2.9,  2.9,  2.9,  2.9,  2.9 ],
       },
 
       box: {
@@ -99,9 +99,9 @@ export const boxAnimationConfig = {
           [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0],
           [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0],
         ],
-        //           KF0  KF1  KF2  KF3  KF4  KF5  KF6  KF7
-        lidAngle:  [ 0,   0,   0,   1,   1,   0,   0,   0 ],
-        flapAngle: [ 0,   0,   0,   1,   1,   0,   0,   0 ],
+        //          KF0  KF1  KF2  KF3  KF4  KF5  KF6  KF7
+        lidAngle:  [ 1, 1, 1, 1, 0, 0, 0, 0 ],   // ← nuevo
+        flapAngle: [ 1, 1, 1, 1, 0, 0, 0, 0 ],
       },
     },
 
@@ -161,8 +161,9 @@ export const boxAnimationConfig = {
           [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0],
           [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0],
         ],
-        lidAngle:  [ 0, 0, 0, 1, 1, 0, 0, 0 ],
-        flapAngle: [ 0, 0, 0, 1, 1, 0, 0, 0 ],
+        //          KF0  KF1  KF2  KF3  KF4  KF5  KF6  KF7
+        lidAngle:  [ 1, 1, 1, 1, 0, 0, 0, 0 ],   // ← nuevo
+        flapAngle: [ 1, 1, 1, 1, 0, 0, 0, 0 ],
       },
     },
 
@@ -200,17 +201,19 @@ export const boxAnimationConfig = {
           [0, -5.0, 0], [0, -5.0, 0], [0, -5.0, 0], [0, -5.0, 0],
         ],
         rotation: [
-          [0, 0, 0],  // KF0 — sin rotación en ningún keyframe
-          [0, 0, 0],
-          [0, 0, 0],
-          [0, 0, 0],
-          [0, 0, 0],
-          [0, 0, 0],
-          [0, 0, 0],
-          [0, 0, 0],
+        
+          [0, 0, 0],               // KF0 → 0°
+          [-Math.PI / 6, 0, 0],     // KF1 → 30°
+          [-Math.PI / 3, 0, 0],     // KF2 → 60°
+          [-Math.PI / 2, 0, 0],     // KF3 → 90°
+          [-Math.PI / 2, 0, 0],     // KF4
+          [-Math.PI / 2, 0, 0],     // KF5
+          [-Math.PI / 2, 0, 0],     // KF6
+          [-Math.PI / 2, 0, 0],     // KF7
+            // KF7
         ],
         //        KF0   KF1   KF2   KF3   KF4   KF5   KF6   KF7
-        scale: [  3.2,  3.2,  3.2,  3.2,  3.2,  3.2,  3.2,  3.2 ],
+        scale: [  3.2,  3.2,  3.2,  3.2,  2.9,  2.9,  2.9,  2.9 ],
       },
 
       box: {
@@ -222,8 +225,9 @@ export const boxAnimationConfig = {
           [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0],
           [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0],
         ],
-        lidAngle:  [ 0, 0, 0, 1, 1, 0, 0, 0 ],
-        flapAngle: [ 0, 0, 0, 1, 1, 0, 0, 0 ],
+        //          KF0  KF1  KF2  KF3  KF4  KF5  KF6  KF7
+        lidAngle:  [ 1, 1, 1, 1, 0, 0, 0, 0 ],   // ← nuevo
+        flapAngle: [ 1, 1, 1, 1, 0, 0, 0, 0 ],
       },
     },
 
@@ -283,8 +287,9 @@ export const boxAnimationConfig = {
           [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0],
           [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0],
         ],
-        lidAngle:  [ 0, 0, 0, 1, 1, 0, 0, 0 ],
-        flapAngle: [ 0, 0, 0, 1, 1, 0, 0, 0 ],
+        //          KF0  KF1  KF2  KF3  KF4  KF5  KF6  KF7
+        lidAngle:  [ 1, 1, 1, 1, 0, 0, 0, 0 ],   // ← nuevo
+        flapAngle: [ 1, 1, 1, 1, 0, 0, 0, 0 ],
       },
     },
 

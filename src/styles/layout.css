@@ -190,7 +190,7 @@
               opacity  0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .product-bar--hidden {
-  transform: translateY(120%);
+  transform: translateY(calc(100% + 60px));
   opacity: 0;
   pointer-events: none;
 }
@@ -377,7 +377,6 @@
   /* height se aplica desde JS */
 }
 
-/* Sección sticky: permanece 100vh en pantalla mientras el track desplaza */
 #box-animation-in-box {
   background: #fff;
   position: sticky;
@@ -403,4 +402,15 @@
   pointer-events: none;
   user-select: none;
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.18);
+}
+
+.hid-product-bar{
+
+  position: fixed;
+  left: 0;
+  bottom: 0;
+
+  transform: translateY(110vh); /* 100vh + 10vh debajo */
+  
+  pointer-events: none; /* no bloquea clicks */
 }

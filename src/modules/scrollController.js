@@ -42,16 +42,35 @@ export class ScrollController {
       },
     })
 
-    // Ocultar la paleta de selección al salir del top, mostrarla al volver
-    const bar = document.getElementById('product-bar')
-    if (bar) {
-      ScrollTrigger.create({
-        trigger:     '#scroll-stage',
-        start:       'top bottom',   // en cuanto el usuario empieza a bajar
-        onEnter:     () => bar.classList.add('product-bar--hidden'),
-        onLeaveBack: () => bar.classList.remove('product-bar--hidden'),
-      })
-    }
+    let barHidden = false;
+
+    gsap.to("#product-bar", {
+      y: 120,
+      opacity: 0,
+      pointerEvents: "none",
+      duration: 0.3,
+      ease: "power2.out",
+
+      scrollTrigger: {
+        trigger: ".hid-product-bar",
+        start: "top bottom",
+
+        // desactivamos toggleActions
+        onUpdate: (self) => {
+          const bar = document.getElementById("product-bar");
+
+          if (!barHidden && self.progress >= 1) {
+            // ocultar la barra cuando el trigger se pasa
+            gsap.to(bar, { y: 120, opacity: 0, pointerEvents: "none", duration: 0.3 });
+            barHidden = true;
+          } else if (barHidden && self.scroll() <= 0) {
+            // si volvemos hasta arriba del documento, la barra reaparece
+            gsap.to(bar, { y: 0, opacity: 1, pointerEvents: "auto", duration: 0.3 });
+            barHidden = false;
+          }
+        }
+      }
+    });
   }
 
   /** Congela esta animación — usado por boxAnimationSection */
