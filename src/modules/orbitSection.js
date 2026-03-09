@@ -10,6 +10,11 @@
  *  Curved text: Each letter is a <tspan> on an SVG arc.
  *               Letters reveal one-by-one left→right driven by scroll,
  *               matching the cards' conveyor-belt feel.
+ *
+ *  ✦ Dome curvature is now relative to viewport width:
+ *       narrow → subtle arc   |   wide → dramatic dome
+ *  ✦ Orbit radius adapts to aspect ratio:
+ *       tall+narrow → cards pushed further from center
  */
 
 import { gsap }          from 'gsap'
@@ -25,16 +30,52 @@ const ACTIVATE_START      = 0.18
 const RING_ANIM_START     = 20
 const RING_ANIM_DUR       = 80
 
-/* ── Dome border-radius — different values for mobile vs desktop ─────── */
-const BG_RADIUS_INITIAL = {
-  desktop: '6% 6% 0 0 / 2% 2% 0 0',
-  mobile:  '6% 6% 0 0 / 4% 4% 0 0',
+/* ── Dynamic dome curvature — relative to viewport width ─────────────── *
+ *  Maps vw from 320 → 1440 to a vertical border-radius %
+ *  Initial (flat):  1% → 3%
+ *  Final (dome):    4% → 38%
+ *  Always keeps a subtle minimum arc even on the narrowest screens.
+ */
+const CURVE_INITIAL_MIN = 1     // vertical-radius % at 320px (start of anim)
+const CURVE_INITIAL_MAX = 3     // vertical-radius % at 1440px (start of anim)
+const CURVE_FINAL_MIN   = 4     // vertical-radius % at 320px (end of anim)
+const CURVE_FINAL_MAX   = 38    // vertical-radius % at 1440px (end of anim)
+const VW_MIN            = 320
+const VW_MAX            = 1440
+
+function lerp(a, b, t) {
+  return a + (b - a) * Math.min(1, Math.max(0, t))
 }
-const BG_RADIUS_FINAL = {
-  desktop: '50% 50% 0 0 / 38% 38% 0 0',
-  mobile:  '50% 50% 0 0 / 18% 18% 0 0',
+
+function vwFactor() {
+  return (window.innerWidth - VW_MIN) / (VW_MAX - VW_MIN)
 }
-const isMobile = () => window.innerWidth < 768
+
+function getInitialRadius() {
+  const curve = lerp(CURVE_INITIAL_MIN, CURVE_INITIAL_MAX, vwFactor())
+  return `50% 50% 0 0 / ${curve}% ${curve}% 0 0`
+}
+
+function getFinalRadius() {
+  const curve = lerp(CURVE_FINAL_MIN, CURVE_FINAL_MAX, vwFactor())
+  return `50% 50% 0 0 / ${curve}% ${curve}% 0 0`
+}
+
+/* ── Dynamic orbit radius — adapts to aspect ratio ───────────────────── *
+ *  Base: min(vw, vh) * 0.55
+ *  Tall bonus: when the screen is portrait (aspect < 1), cards get
+ *  pushed further out so they don't overlap the center content.
+ *  The taller & narrower → the bigger the bonus (up to +35%).
+ */
+function getRadius() {
+  const w = window.innerWidth
+  const h = window.innerHeight
+  const base = Math.min(w, h) * 0.55
+  const aspect = w / h
+  // portrait → bonus grows; landscape → bonus is 0
+  const tallBonus = Math.max(0, (1 - aspect) * 0.55)
+  return base * (1 + tallBonus)
+}
 
 /* ── Text reveal timing ──────────────────────────────────────────────── */
 const TEXT_REVEAL_START    = 0.10
@@ -50,8 +91,6 @@ export function initOrbitSection() {
   const bg    = section.querySelector('.orbit-bg')
   const N     = cards.length
   if (!N || !track || !ring) return
-
-  const getRadius = () => Math.min(window.innerWidth, window.innerHeight) * 0.55
 
   /* ── Place cards at orbit slots (invisible) ────────────────────────── */
   const layoutCards = () => {
@@ -71,7 +110,7 @@ export function initOrbitSection() {
   }
 
   gsap.set(ring, { rotation: 0 })
-  if (bg) gsap.set(bg, { y: '105%', borderRadius: isMobile() ? BG_RADIUS_INITIAL.mobile : BG_RADIUS_INITIAL.desktop })
+  if (bg) gsap.set(bg, { y: '105%', borderRadius: getInitialRadius() })
   layoutCards()
 
   /* ── Build curved text (returns array of letter tspans) ────────────── */
@@ -144,7 +183,7 @@ export function initOrbitSection() {
     if (bg) {
       tl.to(bg, {
         y: '0%',
-        borderRadius: isMobile() ? BG_RADIUS_FINAL.mobile : BG_RADIUS_FINAL.desktop,
+        borderRadius: getFinalRadius(),
         duration: 20,
         ease: 'power2.out',
       }, 0)
@@ -170,7 +209,7 @@ export function initOrbitSection() {
       currentTl.scrollTrigger?.kill()
       currentTl.kill()
       gsap.set(ring, { rotation: 0 })
-      if (bg) gsap.set(bg, { y: '105%', borderRadius: isMobile() ? BG_RADIUS_INITIAL.mobile : BG_RADIUS_INITIAL.desktop })
+      if (bg) gsap.set(bg, { y: '105%', borderRadius: getInitialRadius() })
       layoutCards()
       currentTl = buildTimeline()
       ScrollTrigger.refresh()

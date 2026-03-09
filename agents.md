@@ -1,10 +1,18 @@
 # MODUBAG — Agent Context & Guidelines
 
+> **MANDATORY RULE — SELF-UPDATE:**
+> After every change to any module, HTML structure, CSS, or color system,
+> update this file (`agents.md`) to reflect the new state before finishing the task.
+> This file is the single source of truth for all future agents.
+
+---
+
 ## Project overview
 
 Interactive 3D product showcase for a modular luxury handbag (**MODUBAG**).
 Four color variants (Classic, Rouge, Rose, Cobalt), scroll-driven 3D animations, and a
-packaging reveal sequence. No framework — vanilla JS with ES6 modules, built with Vite.
+packaging reveal sequence followed by a zipper transition into static content sections.
+No framework — vanilla JS with ES6 modules, built with Vite.
 
 **Stack:** Vite · Three.js · GSAP + ScrollTrigger · Lenis (smooth scroll) · Vanilla CSS
 
@@ -17,6 +25,7 @@ packaging reveal sequence. No framework — vanilla JS with ES6 modules, built w
 ├── index.html                        ← Single-page HTML shell
 ├── vite.config.js                    ← Vite (Three.js + GSAP split chunks)
 ├── package.json
+├── agents.md                         ← THIS FILE — update after every change
 ├── public/models/                    ← GLB model files (DRACO-compressed)
 └── src/
     ├── main.js                       ← ENTRY POINT — bootstrap + render loop
@@ -36,12 +45,13 @@ packaging reveal sequence. No framework — vanilla JS with ES6 modules, built w
     │   ├── colorTransition.js        ← CSS variable theming per variant
     │   ├── orbitSection.js           ← Feature cards orbit, dome animation, curved text
     │   ├── boxSection.js             ← 3D box geometry + lid/flap pivots
-    │   └── boxAnimationSection.js    ← Keyframe interpolation engine
+    │   ├── boxAnimationSection.js    ← Keyframe interpolation engine
+    │   └── staticSections.js         ← Zipper transition + scroll-reveal (eco, acc, contact)
     └── styles/
         ├── base.css                  ← CSS reset + custom properties
-        ├── layout.css                ← UI components (nav, bar, orbit, box…)
+        ├── layout.css                ← UI components (nav, bar, orbit, box, zipper, sections)
         ├── animations.css            ← @keyframes
-        └── responsive.css           ← Media queries (<480 · <768 · <1024)
+        └── responsive.css            ← Media queries (<480 · <768 · <1024)
 ```
 
 ---
@@ -56,8 +66,11 @@ packaging reveal sequence. No framework — vanilla JS with ES6 modules, built w
 5. Render loop starts (rAF)
 6. initOrbitSection()
 7. initBoxSection()
-8. initBoxAnimationSection()
+8. initBoxAnimationSection()   → onCovered callback → initStaticSections()
 ```
+
+`initStaticSections()` is called inside the `onCovered` callback of `initBoxAnimationSection`,
+meaning the zipper + eco/accessories/contact sections only activate after the box sequence completes.
 
 Never re-run `main.js` logic manually — it is a one-shot bootstrap.
 
@@ -75,6 +88,7 @@ Never re-run `main.js` logic manually — it is a one-shot bootstrap.
 | `boxSection` | Box mesh, lid/flap pivots via GSAP | Bag model |
 | `boxAnimationSection` | Keyframe interpolation during its 700 vh track; disables scroll + interaction controllers | Orbit section |
 | `animationController` | Loader, blob reveal, one-time entrance animations | Scroll-driven tweens |
+| `staticSections` | Zipper SVG animation, scroll-reveal (IntersectionObserver), accessories arrows | Everything above |
 
 ---
 
@@ -108,6 +122,55 @@ Never re-run `main.js` logic manually — it is a one-shot bootstrap.
 | `#box-section` | sticky | 3D box trigger |
 | `.box-anim-scroll-track` | 700 vh | Keyframe animation track |
 | `#box-animation-in-box` | sticky | Final bag+box sequence |
+| `.zipper-track` | 200 vh | Horizontal zipper transition |
+| `.zipper-scene` | sticky | SVG zipper (managed by `staticSections`) |
+| `.eco-section` | auto | Eco-values (3 cards) |
+| `.accessories-section` | auto | Accessories carousel (3 products) |
+| `.contact-section` | auto | Contact form |
+
+### Zipper SVG elements (inside `.zipper-scene`)
+| Selector | Description |
+|----------|-------------|
+| `.zipper-svg` | Full-screen SVG overlay |
+| `.zipper-flap--top` | Top fabric flap path (JS sets `d` attribute) |
+| `.zipper-flap--bottom` | Bottom fabric flap path (JS sets `d` attribute) |
+| `.zipper-seam` | Horizontal seam line (right of slider) |
+| `.zipper-seam-tint` | Dashed seam overlay |
+| `.zipper-teeth--top` | `<g>` group for top arch teeth polygons |
+| `.zipper-teeth--bottom` | `<g>` group for bottom arch teeth polygons |
+| `.zipper-slider` | Brass-colored DOM slider element |
+
+---
+
+## Color system
+
+### Primary palette
+| Token | Value | Used in |
+|-------|-------|---------|
+| Bag background | `#ffeac9` | `--bg-color`, `#box-animation-in-box`, `.orbit-bg`, zipper flaps |
+| Eco-section / Zipper reveal | `#f0f5ef` | `.eco-section background`, `.zipper-track background` |
+| Accessories section | `#ffffff` | `.accessories-section background` |
+| Feature card dark | `#5c3a1e` | `.feature-card`, `.feature-card-body` |
+| Feature card header | `#3d2410` | `.feature-card-header` |
+| Brand green | `#6daa6a` | Labels, icons, CTAs throughout static sections |
+| Seam golden | `#c8a878` / `#a07840` | Zipper seam lines + teeth |
+
+### CSS custom properties (set by `colorTransition.js`)
+```
+--bg-color       backdrop solid color (bag-specific, e.g. #ffeac9 for Classic)
+--blob-color     blob reveal overlay
+--accent-color   highlights, active dots
+--pill-bg        nav pill background
+--text-dark      primary text
+--text-muted     secondary text
+```
+Never hardcode these colors in JS — always read from the active model config and
+let `colorTransition.js` apply them.
+
+### Color harmony rule
+The zipper flap color **must match** `#box-animation-in-box background` (seamless transition).
+The zipper revealed bg **must match** `.eco-section background` (visual continuity).
+Feature cards use dark warm-leather tones derived from the bag bg hue family, with white text.
 
 ---
 
@@ -139,6 +202,11 @@ Never re-run `main.js` logic manually — it is a one-shot bootstrap.
 5. **`boxAnimationSection` disables others** — it calls
    `scrollController.disable()` and `interactionController.disable()` on enter
    and `enable()` on leave. Respect these gates when adding new controllers.
+
+6. **Zipper uses `requestAnimationFrame` (not GSAP ScrollTrigger)** — `staticSections.js`
+   drives the zipper via a passive `scroll` listener + rAF pending flag. Two phases:
+   - Phase 1 (progress 0→`ZIPPER_RETRACT_AT`): lens opens left→right via SVG path `d`
+   - Phase 2 (`ZIPPER_RETRACT_AT`→1): flaps translateY off screen, seam/slider fade out
 
 ---
 
@@ -179,22 +247,6 @@ To add a new variant: add an entry here **and** a matching block in
 
 Interpolation is **linear** between adjacent keyframe pairs.
 `lidAngle` / `flapAngle` are mapped to actual mesh pivot angles inside `boxSection.js`.
-
----
-
-## CSS custom properties (set by `colorTransition.js`)
-
-```
---bg-color       backdrop solid color
---blob-color     blob reveal overlay
---accent-color   highlights, active dots
---pill-bg        nav pill background
---text-dark      primary text
---text-muted     secondary text
-```
-
-Never hardcode these colors in JS — always read from the active model config and
-let `colorTransition.js` apply them.
 
 ---
 
@@ -249,3 +301,6 @@ window.__box       // boxSection instance
 | Calling `ScrollTrigger.refresh()` before `buildTimeline()` | Triggers fire against old DOM layout |
 | Loading a GLB outside `modelManager` | Breaks cache and causes duplicate geometry in memory |
 | Animating CSS vars directly with GSAP without `colorTransition.js` | Inconsistent state if model switches simultaneously |
+| Setting zipper flap fill to a color other than `#box-animation-in-box` bg | Visual seam visible at the transition boundary |
+| Setting `.zipper-track background` to anything other than `.eco-section background` | Revealed bg doesn't match content below |
+| **Not updating `agents.md` after a change** | Future agents work with stale context — breaks scalability |

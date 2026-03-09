@@ -56,17 +56,18 @@ export function initBoxSection(scene) {
   if (!sectionEl) return null
 
   // ── Materiales ────────────────────────────────────────────────────────
-  const outerMat = new THREE.MeshStandardMaterial({
-    color:     0x1a3020,
-    roughness: 0.55,
-    metalness: 0.15,
-  })
-  const innerMat = new THREE.MeshStandardMaterial({
-    color:     0x2d5038,
-    roughness: 0.75,
-    metalness: 0.05,
-    side: THREE.BackSide,
-  })
+const outerMat = new THREE.MeshStandardMaterial({
+  color: 0xd9c9a3,   // cartón claro
+  roughness: 0.8,    // cartón es bastante mate
+  metalness: 0.0,
+})
+
+const innerMat = new THREE.MeshStandardMaterial({
+  color: 0xcab98f,   // ligeramente más oscuro para interior
+  roughness: 0.9,
+  metalness: 0.0,
+  side: THREE.BackSide,
+})
 
   // ── Grupo raíz ────────────────────────────────────────────────────────
   const boxGroup = new THREE.Group()

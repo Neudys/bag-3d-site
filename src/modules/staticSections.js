@@ -123,8 +123,8 @@ function initZipper() {
         `${tipX.toFixed(1)},${tipY.toFixed(1)} ` +
         `${b1x.toFixed(1)},${b1y.toFixed(1)} ` +
         `${b2x.toFixed(1)},${b2y.toFixed(1)}`)
-      poly.setAttribute('fill', '#3d7a3d')
-      poly.setAttribute('opacity', '0.75')
+      poly.setAttribute('fill', '#a07840')
+      poly.setAttribute('opacity', '0.85')
       group.appendChild(poly)
 
       nextLen += ZIPPER_TOOTH_GAP

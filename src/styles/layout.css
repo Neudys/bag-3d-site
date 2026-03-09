@@ -3,7 +3,7 @@
 /* ─── Loader ──────────────────────────────────────────────────────────── */
 #loader {
   position: fixed; inset: 0; z-index: 9999;
-  background: #ffd89d;
+  background: #ffffff;
   display: flex; align-items: center; justify-content: center;
 }
 
@@ -177,6 +177,7 @@
 
 /* ─── Canvas container (fixed — stays in place during scroll) ──────────── */
 #canvas-container {
+  pointer-events: none;
   position: fixed; inset: 0; z-index: 3;
 }
 #canvas-container canvas { display: block; }
@@ -300,23 +301,23 @@
   will-change: transform;
 }
 
-/* ── Feature card ─────────────────────────────────────────────────────── */
+/* ── Feature card — colores derivados del fondo cálido de las bolsas (#ffeac9) */
 .feature-card {
   position: absolute;
   width: 340px;
-  background: #ffffff;
+  background: #5c3a1e;   /* cuero cálido oscuro — familia del melocotón/peach */
   border-radius: 24px;
   overflow: hidden;
   box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.10),
-    0 3px 10px  rgba(0, 0, 0, 0.05);
+    0 12px 40px rgba(92, 58, 30, 0.30),
+    0 3px 10px  rgba(92, 58, 30, 0.15);
   will-change: transform, opacity;
   pointer-events: auto;
   cursor: default;
 }
 
 .feature-card-header {
-  background: #1a3020;
+  background: #3d2410;   /* cuero más oscuro para el encabezado */
   padding: 22px 26px 20px;
   position: relative;
   overflow: hidden;
@@ -329,7 +330,7 @@
   right: -10px;
   width: 64px;
   height: 64px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 234, 201, 0.08);  /* brillo peach sutil */
   border-radius: 50%;
   pointer-events: none;
 }
@@ -346,9 +347,9 @@
   line-height: 1.1;
 }
 
-/* White body */
+/* Warm body */
 .feature-card-body {
-  background: #ffffff;
+  background: #5c3a1e;   /* mismo tono que la card */
   padding: 22px 26px 26px;
 }
 
@@ -356,7 +357,7 @@
   font-family: var(--font-ui);
   font-size: 14px;
   font-weight: 400;
-  color: #444444;
+  color: rgba(255, 234, 201, 0.82);   /* blanco cálido — armonía con el peach */
   line-height: 1.65;
   margin: 0 0 18px;
 }
@@ -425,7 +426,7 @@
 .zipper-track {
   position: relative;
   height: 200vh;        /* 100vh escena sticky + 100vh de recorrido */
-  background: #ffeac9;  /* fondo claro revelado en la apertura */
+  background: --accent;  /* mismo tono que .contact-section */
   z-index: 1;
 }
 
@@ -591,8 +592,35 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .accessories-section {
-  background: #ffffff;
+  background: #1e120a;  /* mismo tono oscuro que contact-section */
   padding: clamp(72px, 10vw, 120px) clamp(24px, 6vw, 80px);
+}
+
+/* Textos blancos dentro de accessories */
+.accessories-section .static-section-label { color: #ffffff;}
+.accessories-section .static-section-title { color: #ffffff; }
+.accessories-section .product-card__name   { color: #ffffff; }
+.accessories-section .product-card {
+  background: #ffffff25;
+  border-color: rgba(255, 234, 201, 0.10);
+}
+.accessories-section .product-card:hover {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+.accessories-section .product-card__img   { background: #ffffff50; }
+.accessories-section .btn-cart {
+  background:#ffffff50;
+  color: #ffffff;
+}
+.accessories-section .btn-cart:hover      { background: #6daa6a; color: #ffffff; }
+.accessories-section .acc-arrow {
+  border-color: rgba(255, 234, 201, 0.20);
+  color: #ffffff;
+}
+.accessories-section .acc-arrow:hover {
+  background: rgba(255, 234, 201, 0.10);
+  border-color: rgba(255, 234, 201, 0.40);
+  color: #ffffff;
 }
 
 .accessories-section__inner {
@@ -666,7 +694,7 @@
   font-family: var(--font-ui);
   font-size: 1.1rem;
   font-weight: 700;
-  color: #6daa6a;
+  color: #ffffff;
   margin: 0;
 }
 
@@ -720,9 +748,32 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .contact-section {
-  background: #f0f5ef;
+  z-index: 9999;
+  background: #1e120a;  /* oscuro cálido — espresso cálido, armonía con cuero */
   padding: clamp(72px, 10vw, 120px) clamp(24px, 6vw, 80px);
 }
+
+/* Formulario con panel ligeramente más claro que el fondo */
+.contact-section .contact-form {
+  z-index: 9999;
+  background: #ffffff25;
+  padding: clamp(28px, 4vw, 48px);
+  border-radius: 20px;
+}
+
+/* Textos blancos dentro de la contact section */
+.contact-section .static-section-label { color: #ffffff; }
+.contact-section .static-section-title { color: #ffffff; }
+.contact-section .static-section-sub   { color: #ffffff;}
+.contact-section .form-label           { color: #ffffff;}
+.contact-section .form-input {
+  color: #ffffff;
+  border-bottom-color: rgba(255, 234, 201, 0.20);
+}
+.contact-section .form-input:focus     { border-bottom-color: rgba(255, 234, 201, 0.70); }
+.contact-section .form-textarea        { border-color: rgba(255, 234, 201, 0.20); }
+.contact-section .form-textarea:focus  { border-color: rgba(255, 234, 201, 0.70); }
+.contact-section .form-input::placeholder { color: transparent; }
 
 .contact-section__inner {
   max-width: 640px;
