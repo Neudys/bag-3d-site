@@ -301,23 +301,23 @@
   will-change: transform;
 }
 
-/* ── Feature card — colores derivados del fondo cálido de las bolsas (#ffeac9) */
+/* ── Feature card */
 .feature-card {
   position: absolute;
   width: 340px;
-  background: #5c3a1e;   /* cuero cálido oscuro — familia del melocotón/peach */
+  background: var(--accent);
   border-radius: 24px;
   overflow: hidden;
   box-shadow:
-    0 12px 40px rgba(92, 58, 30, 0.30),
-    0 3px 10px  rgba(92, 58, 30, 0.15);
+    0 12px 40px rgba(0, 0, 0, 0.20),
+    0 3px 10px  rgba(0, 0, 0, 0.10);
   will-change: transform, opacity;
   pointer-events: auto;
   cursor: default;
 }
 
 .feature-card-header {
-  background: #3d2410;   /* cuero más oscuro para el encabezado */
+  background: rgba(0, 0, 0, 0.14);
   padding: 22px 26px 20px;
   position: relative;
   overflow: hidden;
@@ -330,7 +330,7 @@
   right: -10px;
   width: 64px;
   height: 64px;
-  background: rgba(255, 234, 201, 0.08);  /* brillo peach sutil */
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -347,9 +347,9 @@
   line-height: 1.1;
 }
 
-/* Warm body */
+/* Card body */
 .feature-card-body {
-  background: #5c3a1e;   /* mismo tono que la card */
+  background: rgba(0, 0, 0, 0.08);
   padding: 22px 26px 26px;
 }
 
@@ -357,9 +357,33 @@
   font-family: var(--font-ui);
   font-size: 14px;
   font-weight: 400;
-  color: rgba(255, 234, 201, 0.82);   /* blanco cálido — armonía con el peach */
+  color: rgba(255, 255, 255, 0.88);
   line-height: 1.65;
   margin: 0 0 18px;
+}
+
+/* ── Marquee strip inside feature card */
+.feature-card-marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  background: rgba(0, 0, 0, 0.18);
+  padding: 7px 0;
+}
+
+.feature-card-marquee-inner {
+  display: inline-block;
+  animation: marquee-scroll 14s linear infinite;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
 /* Centered SVG illustration */
