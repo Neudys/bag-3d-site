@@ -43,34 +43,30 @@ export class ScrollController {
     })
 
     let barHidden = false;
+    const bar = document.getElementById("product-bar");
 
-    gsap.to("#product-bar", {
-      y: 120,
-      opacity: 0,
-      pointerEvents: "none",
-      duration: 0.3,
-      ease: "power2.out",
-
-      scrollTrigger: {
-        trigger: ".hid-product-bar",
-        start: "top bottom",
-
-        // desactivamos toggleActions
-        onUpdate: (self) => {
-          const bar = document.getElementById("product-bar");
-
-          if (!barHidden && self.progress >= 1) {
-            // ocultar la barra cuando el trigger se pasa
-            gsap.to(bar, { y: 120, opacity: 0, pointerEvents: "none", duration: 0.3 });
-            barHidden = true;
-          } else if (barHidden && self.scroll() <= 0) {
-            // si volvemos hasta arriba del documento, la barra reaparece
-            gsap.to(bar, { y: 0, opacity: 1, pointerEvents: "auto", duration: 0.3 });
-            barHidden = false;
-          }
+    // Hide bar once when the marker's top reaches the viewport bottom.
+    // onEnter fires only on the downward crossing — no re-triggering on further scroll.
+    ScrollTrigger.create({
+      trigger: ".hid-product-bar",
+      start: "top bottom",
+      onEnter: () => {
+        if (!barHidden) {
+          gsap.to(bar, { y: 120, opacity: 0, pointerEvents: "none", duration: 0.3, ease: "power2.out" });
+          barHidden = true;
         }
-      }
+      },
     });
+
+    // Re-show bar only when the user scrolls all the way back to the very top.
+    // A passive window scroll listener works independently of where ScrollTrigger is active.
+    const _onScrollTop = () => {
+      if (barHidden && window.scrollY === 0) {
+        gsap.to(bar, { y: 0, opacity: 1, pointerEvents: "auto", duration: 0.3, ease: "power2.out" });
+        barHidden = false;
+      }
+    };
+    window.addEventListener("scroll", _onScrollTop, { passive: true });
   }
 
   /** Congela esta animación — usado por boxAnimationSection */

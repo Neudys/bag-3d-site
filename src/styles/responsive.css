@@ -41,3 +41,83 @@
   .feature-card-icon { height: 60px; }
   .feature-card-icon svg { width: 44px; height: 44px; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   STATIC SECTIONS — Responsive
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Tablet (≤ 1024px) ──── */
+@media (max-width: 1024px) {
+  .eco-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .eco-card { padding: 28px 24px 32px; }
+
+  .accessories-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  /* Hide nav arrows on tablet — grid fits */
+  .acc-arrow { display: none; }
+}
+
+/* ─── Mobile (≤ 768px) ──── */
+@media (max-width: 768px) {
+  /* Eco cards: single column */
+  .eco-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .eco-card { padding: 24px 20px 28px; }
+
+  /* Accessories: horizontal scroll carousel */
+  .accessories-track-wrapper { gap: 0; }
+
+  .accessories-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 16px;
+    padding-bottom: 8px;
+    /* Hide scrollbar but keep scrollable */
+    scrollbar-width: none;
+  }
+
+  .accessories-grid::-webkit-scrollbar { display: none; }
+
+  .product-card {
+    flex: 0 0 75vw;
+    scroll-snap-align: center;
+    max-width: 320px;
+  }
+
+  /* Show arrows on mobile to hint scrollability */
+  .acc-arrow { display: flex; }
+
+  /* Contact form: single column */
+  .form-row { grid-template-columns: 1fr; gap: 20px; }
+
+  .form-submit-row { justify-content: stretch; }
+
+  .btn-submit { width: 100%; justify-content: center; }
+
+  /* Zipper: reduce max slide on very narrow screens */
+  .zipper-track { height: 180vh; }
+}
+
+/* ─── Small mobile (≤ 480px) ──── */
+@media (max-width: 480px) {
+  .eco-section,
+  .accessories-section,
+  .contact-section {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .product-card { flex: 0 0 88vw; }
+}

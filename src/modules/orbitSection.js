@@ -25,6 +25,17 @@ const ACTIVATE_START      = 0.18
 const RING_ANIM_START     = 20
 const RING_ANIM_DUR       = 80
 
+/* ── Dome border-radius — different values for mobile vs desktop ─────── */
+const BG_RADIUS_INITIAL = {
+  desktop: '6% 6% 0 0 / 2% 2% 0 0',
+  mobile:  '6% 6% 0 0 / 4% 4% 0 0',
+}
+const BG_RADIUS_FINAL = {
+  desktop: '50% 50% 0 0 / 38% 38% 0 0',
+  mobile:  '50% 50% 0 0 / 18% 18% 0 0',
+}
+const isMobile = () => window.innerWidth < 768
+
 /* ── Text reveal timing ──────────────────────────────────────────────── */
 const TEXT_REVEAL_START    = 0.10
 const TEXT_REVEAL_END      = 0.50
@@ -60,7 +71,7 @@ export function initOrbitSection() {
   }
 
   gsap.set(ring, { rotation: 0 })
-  if (bg) gsap.set(bg, { y: '105%', borderRadius: '6% 6% 0 0 / 2% 2% 0 0' })
+  if (bg) gsap.set(bg, { y: '105%', borderRadius: isMobile() ? BG_RADIUS_INITIAL.mobile : BG_RADIUS_INITIAL.desktop })
   layoutCards()
 
   /* ── Build curved text (returns array of letter tspans) ────────────── */
@@ -133,7 +144,7 @@ export function initOrbitSection() {
     if (bg) {
       tl.to(bg, {
         y: '0%',
-        borderRadius: '50% 50% 0 0 / 38% 38% 0 0',
+        borderRadius: isMobile() ? BG_RADIUS_FINAL.mobile : BG_RADIUS_FINAL.desktop,
         duration: 20,
         ease: 'power2.out',
       }, 0)
@@ -159,7 +170,7 @@ export function initOrbitSection() {
       currentTl.scrollTrigger?.kill()
       currentTl.kill()
       gsap.set(ring, { rotation: 0 })
-      if (bg) gsap.set(bg, { y: '105%', borderRadius: '6% 6% 0 0 / 2% 2% 0 0' })
+      if (bg) gsap.set(bg, { y: '105%', borderRadius: isMobile() ? BG_RADIUS_INITIAL.mobile : BG_RADIUS_INITIAL.desktop })
       layoutCards()
       currentTl = buildTimeline()
       ScrollTrigger.refresh()

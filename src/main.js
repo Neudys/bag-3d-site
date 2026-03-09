@@ -29,6 +29,7 @@ import { InteractionController } from './modules/interactionController.js'
 import { initOrbitSection }        from './modules/orbitSection.js'
 import { initBoxSection }          from './modules/boxSection.js'
 import { initBoxAnimationSection } from './modules/boxAnimationSection.js'
+import { initStaticSections }      from './modules/staticSections.js'
 
 import { modelsConfig } from './config/modelsConfig.js'
 
@@ -86,6 +87,7 @@ async function bootstrap() {
         initOrbitSection()
         const box = initBoxSection(scene)
         initBoxAnimationSection(camera, modelManager, scrollController, interaction, box)
+        initStaticSections()
         if (import.meta.env.DEV) window.__box = box
         interaction.init()
 
