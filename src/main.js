@@ -30,6 +30,7 @@ import { initOrbitSection }        from './modules/orbitSection.js'
 import { initBoxSection }          from './modules/boxSection.js'
 import { initBoxAnimationSection } from './modules/boxAnimationSection.js'
 import { initStaticSections }      from './modules/staticSections.js'
+import { FloatingDecorations }     from './modules/floatingDecorations.js'
 
 import { modelsConfig } from './config/modelsConfig.js'
 
@@ -50,6 +51,7 @@ async function bootstrap() {
   const animationController = new AnimationController(modelManager)
   const scrollController    = new ScrollController(modelManager)
   const interaction         = new InteractionController(modelManager)
+  const floatingDecorations = new FloatingDecorations()
 
   // ── Model switch helper ────────────────────────────────────────────────
   function switchToModel(index) {
@@ -61,6 +63,7 @@ async function bootstrap() {
     modelManager.goTo(index, scrollState)
     animationController.updatePillName(modelsConfig[index].name)
     animationController.setActiveDot(index)
+    floatingDecorations.switchToModel(modelsConfig[index].id)
   }
 
   // ── 1. Start letter animation (3 seconds) ─────────────────────────────
@@ -84,6 +87,8 @@ async function bootstrap() {
 
         modelManager.showInitial()
         scrollController.init()
+        floatingDecorations.show(cfg.id)
+        floatingDecorations.initScroll()
         initOrbitSection()
         const box = initBoxSection(scene)
         initBoxAnimationSection(camera, modelManager, scrollController, interaction, box)

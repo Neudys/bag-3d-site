@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MODUBAG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet" />
+    <script type="module" crossorigin src="/assets/index-BRrswMXt.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/three-ysJkh7Af.js">
+    <link rel="modulepreload" crossorigin href="/assets/gsap-C8pce-KX.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-gHeP7ChU.css">
+  </head>
+  <body>
+
+    <!-- ── LOADER (white screen) ──────────────────────────────────────────── -->
+    <div id="loader" aria-hidden="true">
+      <div class="loader-inner">
+        <div class="loader-logo" id="loader-logo"></div>
+        <div class="loader-bar"><div class="loader-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- ── APP ────────────────────────────────────────────────────────────── -->
+    <div id="app" style="opacity:0;">
+
+      <!-- Navigation — MANA style: logo left, everything right -->
+      <nav id="nav">
+        <a href="#" class="nav-logo">MODU BAG</a>
+
+        <div class="nav-right">
+          <div class="nav-pill-group">
+            <a href="#" class="nav-pill-item">
+              Collection
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 3.5L5 6L7.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="#" class="nav-pill-item">
+              Atelier
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 3.5L5 6L7.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="#" class="nav-pill-item">About</a>
+
+            <button class="nav-icon-btn" aria-label="Account">
+              <p>En</p>
+            </button>
+            <button class="nav-icon-btn" aria-label="Account">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <button class="nav-icon-btn" aria-label="Cart">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M16 10a4 4 0 01-8 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Hero — fixed 3D canvas with colored background -->
+      <section id="hero">
+        <div id="env-bg" aria-hidden="true">
+          <div class="env-solid" id="env-solid"></div>
+          <div class="env-noise"></div>
+        </div>
+
+        <!-- Floating decorations (fixed, behind canvas) -->
+        <div id="floating-decorations" aria-hidden="true"></div>
+
+        <!-- 3D canvas (fixed) -->
+        <div id="canvas-container" role="img" aria-label="3D bag model"></div>
+
+        <!-- Bottom product bar -->
+        <div class="product-bar" id="product-bar">
+          <button class="arrow-circle" id="btn-prev" aria-label="Previous">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M13 4L7 10l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          
+          <div class="hid-product-bar"></div>
+
+          <div class="product-bar-center">
+            <div class="model-dots" id="model-dots"></div>
+            <button class="product-pill">
+              <span id="product-pill-name">—</span>
+            </button>
+          </div>
+
+          <button class="arrow-circle" id="btn-next" aria-label="Next">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M7 4l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- Scroll stage — drives 360° rotation -->
+      <section id="scroll-stage" aria-hidden="true"></section>
+
+      <!-- ── Features Orbit — sticky section, cards orbit the bag ──────── -->
+      <div class="features-scroll-track">
+        <section id="features-orbit"
+                 data-curved-text="BEBIDA ENERGETICA SUPER BUENA"
+                 aria-label="Características del producto">
+
+          <div class="orbit-bg"></div>
+
+          <div class="orbit-wrapper">
+            <div class="orbit-ring">
+
+              <!-- Card 1 -->
+              <article class="feature-card">
+                <div class="feature-card-header">
+                  <h3 class="feature-card-title">Modular</h3>
+                </div>
+                <div class="feature-card-marquee" aria-hidden="true">
+                  <span class="feature-card-marquee-inner">MODULAR &nbsp;·&nbsp; INTERCAMBIABLE &nbsp;·&nbsp; PERSONALIZABLE &nbsp;·&nbsp; MODULAR &nbsp;·&nbsp; INTERCAMBIABLE &nbsp;·&nbsp; PERSONALIZABLE &nbsp;·&nbsp;</span>
+                </div>
+                <div class="feature-card-body">
+                  <p class="feature-card-text">Intercambia módulos para personalizar tu mochila al instante según cada aventura.</p>
+                  <div class="feature-card-icon">
+                    <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="2" y="2" width="27" height="27" rx="6" fill="#6daa6a" opacity="0.4"/>
+                      <rect x="39" y="2" width="27" height="27" rx="6" fill="#6daa6a" opacity="0.65"/>
+                      <rect x="2" y="39" width="27" height="27" rx="6" fill="#6daa6a" opacity="0.65"/>
+                      <rect x="39" y="39" width="27" height="27" rx="6" fill="#6daa6a"/>
+                      <line x1="34" y1="2" x2="34" y2="66" stroke="#6daa6a" stroke-width="1.5" opacity="0.3"/>
+                      <line x1="2" y1="34" x2="66" y2="34" stroke="#6daa6a" stroke-width="1.5" opacity="0.3"/>
+                    </svg>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Card 2 -->
+              <article class="feature-card">
+                <div class="feature-card-header">
+                  <h3 class="feature-card-title">Impermeable</h3>
+                </div>
+                <div class="feature-card-body">
+                  <p class="feature-card-text">Materiales de alta resistencia que protegen tu contenido en cualquier clima.</p>
+                  <div class="feature-card-icon">
+                    <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M34 4 L8 22 L8 46 C8 55.9 20 64 34 64 C48 64 60 55.9 60 46 L60 22 Z" fill="#6daa6a" opacity="0.7"/>
+                      <path d="M22 44 Q27 37 34 35 Q41 37 46 44" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.9"/>
+                      <circle cx="34" cy="26" r="5" fill="white" opacity="0.5"/>
+                    </svg>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Card 3 -->
+              <article class="feature-card">
+                <div class="feature-card-header">
+                  <h3 class="feature-card-title">Expandible</h3>
+                </div>
+                <div class="feature-card-body">
+                  <p class="feature-card-text">Crece con tus necesidades, desde el día a día hasta la expedición más larga.</p>
+                  <div class="feature-card-icon">
+                    <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M42 4 L64 4 L64 26" stroke="#6daa6a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M64 4 L38 30" stroke="#6daa6a" stroke-width="3.5" stroke-linecap="round"/>
+                      <path d="M26 64 L4 64 L4 42" stroke="#6daa6a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M4 64 L30 38" stroke="#6daa6a" stroke-width="3.5" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Card 4 -->
+              <article class="feature-card">
+                <div class="feature-card-header">
+                  <h3 class="feature-card-title">Premium</h3>
+                </div>
+                <div class="feature-card-body">
+                  <p class="feature-card-text">Materiales de primera calidad, costuras reforzadas y herrajes duraderos. Hecha para siempre.</p>
+                  <div class="feature-card-icon">
+                    <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <polygon points="34,4 41,25 64,25 46,39 53,60 34,47 15,60 22,39 4,25 27,25" fill="#6daa6a" opacity="0.75"/>
+                      <polygon points="34,14 39,28 54,28 42,37 47,51 34,43 21,51 26,37 14,28 29,28" fill="white" opacity="0.3"/>
+                    </svg>
+                  </div>
+                </div>
+              </article>
+
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ── Box Section — 3D gift box reveals the bag ─────────────────── -->
+      <div class="box-scroll-track">
+        <section id="box-section" aria-label="Product box reveal"></section>
+      </div>
+
+      <!-- ── Box Animation — scroll-driven keyframe sequence ──────────── -->
+      <div class="box-anim-scroll-track">
+        <!-- sticky: ocupa 100vh mientras el track desplaza  -->
+        <section id="box-animation-in-box" class="box-animation-in-box">
+
+        </section>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════════════════════
+           ZIPPER TRANSITION  — dos paneles oscuros se separan al hacer scroll
+           revelando el mundo claro de las secciones siguientes.
+           ════════════════════════════════════════════════════════════════════ -->
+      <div class="zipper-track" aria-hidden="true">
+        <div class="zipper-scene">
+
+            <!-- Full-screen SVG: two cubic-bezier fabric flaps + teeth -->
+          <svg class="zipper-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Fabric flaps — same color as the section above (#ffeac9 peach) -->
+            <path class="zipper-flap--top"    fill="#ffeac9" />
+            <path class="zipper-flap--bottom" fill="#ffeac9" />
+            <!-- Closed seam line -->
+            <line class="zipper-seam"
+                  stroke="#c8a878"
+                  stroke-width="6"
+                  stroke-linecap="round" />
+            <!-- Solid seam tint -->
+            <line class="zipper-seam-tint"
+                  stroke="#a07840"
+                  stroke-width="2"
+                  stroke-dasharray="10 6"
+                  stroke-linecap="round" />
+            <!-- Teeth groups (populated dynamically by JS) -->
+            <g class="zipper-teeth--top"></g>
+            <g class="zipper-teeth--bottom"></g>
+          </svg>
+
+          <!-- Slider / puller (DOM element for easy filter + transform) -->
+          <div class="zipper-slider">
+            <svg width="56" height="38" viewBox="0 0 56 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Body -->
+              <rect x="2" y="4" width="52" height="26" rx="6" fill="#c8b07a"/>
+              <rect x="2" y="4" width="52" height="26" rx="6" stroke="#a8904a" stroke-width="1"/>
+              <!-- Tape slot -->
+              <rect x="12" y="14" width="32" height="6" rx="3" fill="#8a7038" opacity="0.5"/>
+              <!-- Shine -->
+              <line x1="8" y1="10" x2="48" y2="10" stroke="rgba(255,255,255,0.30)" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Pull tab -->
+              <rect x="20" y="30" width="16" height="6" rx="3" fill="#b09050"/>
+              <rect x="20" y="30" width="16" height="6" rx="3" stroke="#906830" stroke-width="0.75"/>
+              <!-- Tab chevron -->
+              <path d="M24 32l4 2 4-2" stroke="rgba(255,255,255,0.45)" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+        </div>
+      </div><!-- /.zipper-track -->
+
+
+      <!-- ════════════════════════════════════════════════════════════════════
+           SECCIÓN 1 — Valores eco-responsables
+           ════════════════════════════════════════════════════════════════════ -->
+      <section class="eco-section" aria-label="Compromisos eco-responsables">
+        <div class="eco-section__inner">
+
+          <header class="static-section-header reveal">
+            <span class="static-section-label">Nuestros Compromisos</span>
+            <h2 class="static-section-title">Diseñado con el planeta en mente</h2>
+          </header>
+
+          <div class="eco-grid">
+
+            <!-- Card 1 — Materiales reciclables -->
+            <article class="eco-card reveal">
+              <div class="eco-card__icon" aria-hidden="true">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M24 6L30 14H18L24 6Z" stroke="#6daa6a" stroke-width="1.8" stroke-linejoin="round"/>
+                  <path d="M18 14L8 30H20" stroke="#6daa6a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M30 14L40 30H28" stroke="#6daa6a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M20 30H28L24 38L20 30Z" stroke="#6daa6a" stroke-width="1.8" stroke-linejoin="round"/>
+                  <circle cx="24" cy="24" r="4" stroke="#6daa6a" stroke-width="1.5"/>
+                </svg>
+              </div>
+              <h3 class="eco-card__title">Materiales Reciclables</h3>
+              <p class="eco-card__desc">Fabricado con tejidos recuperados y materiales de certificación GOTS. Producción circular desde el origen.</p>
+            </article>
+
+            <!-- Card 2 — Fabricado en Francia -->
+            <article class="eco-card reveal">
+              <div class="eco-card__icon" aria-hidden="true">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M24 8C17 8 10 16 10 24C10 32 17 40 24 40" stroke="#6daa6a" stroke-width="1.8" stroke-linecap="round"/>
+                  <path d="M24 8C31 8 38 16 38 24C38 32 31 40 24 40" stroke="#6daa6a" stroke-width="1.8" stroke-linecap="round"/>
+                  <line x1="9" y1="18" x2="39" y2="18" stroke="#6daa6a" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="9" y1="30" x2="39" y2="30" stroke="#6daa6a" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="24" y1="8" x2="24" y2="40" stroke="#6daa6a" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <h3 class="eco-card__title">Fabricado en Francia</h3>
+              <p class="eco-card__desc">Artesanía francesa en cada puntada. Talleres de proximidad, condiciones laborales justas y huella de carbono reducida.</p>
+            </article>
+
+            <!-- Card 3 — Entrega eco-responsable -->
+            <article class="eco-card reveal">
+              <div class="eco-card__icon" aria-hidden="true">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="14" cy="34" r="4" stroke="#6daa6a" stroke-width="1.8"/>
+                  <circle cx="36" cy="34" r="4" stroke="#6daa6a" stroke-width="1.8"/>
+                  <path d="M18 34H32" stroke="#6daa6a" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M14 30V18H28L36 26V30" stroke="#6daa6a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M14 18V14H24" stroke="#6daa6a" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M26 14L32 14" stroke="#6daa6a" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M29 11L29 17" stroke="#6daa6a" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <h3 class="eco-card__title">Entrega Eco-Responsable</h3>
+              <p class="eco-card__desc">Envíos en packaging 100 % reciclado, consolidados para reducir trayectos y compensación de CO₂ en cada pedido.</p>
+            </article>
+
+          </div><!-- /.eco-grid -->
+        </div><!-- /.eco-section__inner -->
+      </section><!-- /.eco-section -->
+
+
+      <!-- ════════════════════════════════════════════════════════════════════
+           SECCIÓN 2 — Carrusel de accesorios
+           ════════════════════════════════════════════════════════════════════ -->
+      <section class="accessories-section" aria-label="Accesorios">
+        <div class="accessories-section__inner">
+
+          <header class="static-section-header reveal">
+            <span class="static-section-label">Complementos</span>
+            <h2 class="static-section-title">Completa tu MODUBAG</h2>
+          </header>
+
+          <div class="accessories-track-wrapper">
+            <!-- Flecha izquierda -->
+            <button class="acc-arrow acc-arrow--prev" aria-label="Anterior accesorio">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 3L5 9l6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+
+            <div class="accessories-grid" role="list">
+
+              <!-- Producto 1 -->
+              <article class="product-card reveal" role="listitem">
+                <div class="product-card__img" aria-hidden="true">
+                  <div class="product-card__img-placeholder">
+                    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="8" y="18" width="48" height="34" rx="4" stroke="#6daa6a" stroke-width="1.8"/>
+                      <path d="M8 26h48" stroke="#6daa6a" stroke-width="1.4" stroke-linecap="round"/>
+                      <path d="M22 18V14a10 10 0 0 1 20 0v4" stroke="#6daa6a" stroke-width="1.8" stroke-linecap="round"/>
+                      <circle cx="32" cy="40" r="4" stroke="#6daa6a" stroke-width="1.5"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="product-card__info">
+                  <h3 class="product-card__name">Organizador Escandinavo</h3>
+                  <p class="product-card__price">€19,99</p>
+                  <button class="btn-cart" aria-label="Añadir Organizador Escandinavo al carrito">Añadir al carrito</button>
+                </div>
+              </article>
+
+              <!-- Producto 2 -->
+              <article class="product-card reveal" role="listitem">
+                <div class="product-card__img" aria-hidden="true">
+                  <div class="product-card__img-placeholder">
+                    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="10" y="20" width="44" height="30" rx="5" stroke="#6daa6a" stroke-width="1.8"/>
+                      <path d="M32 20V14" stroke="#6daa6a" stroke-width="1.8" stroke-linecap="round"/>
+                      <path d="M20 14h24" stroke="#6daa6a" stroke-width="1.8" stroke-linecap="round"/>
+                      <path d="M20 35h24" stroke="#6daa6a" stroke-width="1.5" stroke-linecap="round"/>
+                      <path d="M26 42l3 3 9-9" stroke="#6daa6a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="product-card__info">
+                  <h3 class="product-card__name">Pochette Zipper</h3>
+                  <p class="product-card__price">€29,99</p>
+                  <button class="btn-cart" aria-label="Añadir Pochette Zipper al carrito">Añadir al carrito</button>
+                </div>
+              </article>
+
+              <!-- Producto 3 -->
+              <article class="product-card reveal" role="listitem">
+                <div class="product-card__img" aria-hidden="true">
+                  <div class="product-card__img-placeholder">
+                    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M24 10C24 10 20 12 20 20V48C20 50 22 52 24 52H40C42 52 44 50 44 48V20C44 12 40 10 40 10H24Z" stroke="#6daa6a" stroke-width="1.8" stroke-linejoin="round"/>
+                      <path d="M24 10h16" stroke="#6daa6a" stroke-width="1.8" stroke-linecap="round"/>
+                      <path d="M28 24v16" stroke="#6daa6a" stroke-width="1.5" stroke-linecap="round"/>
+                      <path d="M36 24v16" stroke="#6daa6a" stroke-width="1.5" stroke-linecap="round"/>
+                      <path d="M24 34h16" stroke="#6daa6a" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="product-card__info">
+                  <h3 class="product-card__name">Porta Bidón</h3>
+                  <p class="product-card__price">€39,99</p>
+                  <button class="btn-cart" aria-label="Añadir Porta Bidón al carrito">Añadir al carrito</button>
+                </div>
+              </article>
+
+            </div><!-- /.accessories-grid -->
+
+            <!-- Flecha derecha -->
+            <button class="acc-arrow acc-arrow--next" aria-label="Siguiente accesorio">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M7 3l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div><!-- /.accessories-track-wrapper -->
+
+        </div><!-- /.accessories-section__inner -->
+      </section><!-- /.accessories-section -->
+
+
+      <!-- ════════════════════════════════════════════════════════════════════
+           SECCIÓN 3 — Formulario de contacto
+           ════════════════════════════════════════════════════════════════════ -->
+      <section class="contact-section" aria-label="Formulario de contacto">
+        <div class="contact-section__inner">
+
+          <header class="static-section-header reveal">
+            <span class="static-section-label">Soporte</span>
+            <h2 class="static-section-title">¿Necesitas ayuda?</h2>
+            <p class="static-section-sub">Cuéntanos tu consulta y te respondemos en menos de 24 h.</p>
+          </header>
+
+          <form class="contact-form reveal" novalidate aria-label="Formulario de contacto">
+
+            <div class="form-field">
+              <label class="form-label" for="cf-name">Nombre completo</label>
+              <input class="form-input" type="text" id="cf-name" name="name"
+                     autocomplete="name" placeholder=" " required />
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-label" for="cf-email">Email</label>
+                <input class="form-input" type="email" id="cf-email" name="email"
+                       autocomplete="email" placeholder=" " required />
+              </div>
+              <div class="form-field">
+                <label class="form-label" for="cf-phone">Teléfono (opcional)</label>
+                <input class="form-input" type="tel" id="cf-phone" name="phone"
+                       autocomplete="tel" placeholder=" " />
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label class="form-label" for="cf-message">Describe tu consulta</label>
+              <textarea class="form-input form-textarea" id="cf-message" name="message"
+                        rows="5" placeholder=" " required></textarea>
+            </div>
+
+            <div class="form-submit-row">
+              <button type="submit" class="btn-submit">
+                <span>Enviar mensaje</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+
+          </form><!-- /.contact-form -->
+
+        </div><!-- /.contact-section__inner -->
+      </section><!-- /.contact-section -->
+
+    </div><!-- /#app -->
+
+  </body>
+</html>
