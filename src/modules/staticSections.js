@@ -1,26 +1,292 @@
 /**
  * modules/staticSections.js
  *
- * Zipper transition + scroll-reveal for the static sections
- * (eco-values, accessories, contact form).
+ * Zipper transition + GSAP ScrollTrigger animations for all static sections
+ * (eco-values, gallery, product cards, contact form).
  *
- * Zipper:  horizontal zipper that opens left → right.
- *          The slider travels RIGHT along the horizontal seam.
- *          Behind the slider (to its LEFT), two fabric flaps peel away:
- *            – top flap curves UPWARD
- *            – bottom flap curves DOWNWARD
- *          Maximum opening is at the LEFT edge of the viewport;
- *          the gap tapers smoothly to ZERO at the slider position.
- *          This matches the natural look of unzipping fabric.
- *
- * Reveal:  IntersectionObserver adds .reveal--visible to .reveal elements.
+ * Professional GSAP animations with ScrollTrigger:
+ *  - Eco section: cards fade + rise with stagger
+ *  - Gallery: images scale from 1.05 → 1 with fade, differentiated timing
+ *  - Product cards: staggered left→right appearance
+ *  - Contact form: sequential input reveal + elastic button
+ *  - Hover effects on product cards via GSAP
  */
+
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 export function initStaticSections() {
   initZipper()
-  initScrollReveal()
-  initAccessoriesArrows()
+  initGSAPAnimations()
 }
+
+/* ── GSAP ScrollTrigger Animations ──────────────────────────────────────── */
+
+function initGSAPAnimations() {
+  // Small delay to ensure DOM is ready and Lenis is initialized
+  requestAnimationFrame(() => {
+    animateEcoSection()
+    animateGallerySection()
+    animateProductCards()
+    animateContactForm()
+    initProductCardHovers()
+  })
+}
+
+/* ── Eco Section ────────────────────────────────────────────────────────── */
+
+function animateEcoSection() {
+  const section = document.querySelector('.eco-section')
+  if (!section) return
+
+  // Header
+  const header = section.querySelector('.static-section-header')
+  if (header) {
+    gsap.set(header, { opacity: 0, y: 40 })
+    gsap.to(header, {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: header,
+        start: 'top 85%',
+        toggleActions: 'play none none none',
+      },
+    })
+  }
+
+  // Cards
+  const cards = section.querySelectorAll('.eco-card')
+  if (cards.length) {
+    gsap.set(cards, { opacity: 0, y: 50 })
+    gsap.to(cards, {
+      opacity: 1,
+      y: 0,
+      duration: 0.9,
+      ease: 'power3.out',
+      stagger: 0.15,
+      scrollTrigger: {
+        trigger: section.querySelector('.eco-grid'),
+        start: 'top 80%',
+        toggleActions: 'play none none none',
+      },
+    })
+  }
+}
+
+/* ── Gallery Section ────────────────────────────────────────────────────── */
+
+function animateGallerySection() {
+  const section = document.querySelector('.gallery-section')
+  if (!section) return
+
+  const mainImg = section.querySelector('.gallery-grid__main')
+  const sideImgs = section.querySelectorAll('.gallery-grid__side img')
+
+  // Main image: scale + fade with cinematic feel
+  if (mainImg) {
+    gsap.set(mainImg, { opacity: 0, scale: 1.05 })
+    gsap.to(mainImg, {
+      opacity: 1,
+      scale: 1,
+      duration: 1.4,
+      ease: 'expo.out',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 75%',
+        toggleActions: 'play none none none',
+      },
+    })
+  }
+
+  // Side images: staggered scale + fade, slightly delayed
+  if (sideImgs.length) {
+    gsap.set(sideImgs, { opacity: 0, scale: 1.05 })
+    gsap.to(sideImgs, {
+      opacity: 1,
+      scale: 1,
+      duration: 1.2,
+      ease: 'expo.out',
+      stagger: 0.2,
+      delay: 0.25,
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 75%',
+        toggleActions: 'play none none none',
+      },
+    })
+  }
+}
+
+/* ── Product Cards ──────────────────────────────────────────────────────── */
+
+function animateProductCards() {
+  const section = document.querySelector('.products-section')
+  if (!section) return
+
+  // Header
+  const header = section.querySelector('.static-section-header')
+  if (header) {
+    gsap.set(header, { opacity: 0, y: 40 })
+    gsap.to(header, {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: header,
+        start: 'top 85%',
+        toggleActions: 'play none none none',
+      },
+    })
+  }
+
+  // Cards: staggered left-to-right with fade + rise
+  const cards = section.querySelectorAll('.product-card-v2')
+  if (cards.length) {
+    gsap.set(cards, { opacity: 0, y: 60, scale: 0.95 })
+    gsap.to(cards, {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      duration: 1,
+      ease: 'back.out(1.2)',
+      stagger: 0.18,
+      scrollTrigger: {
+        trigger: section.querySelector('.products-grid'),
+        start: 'top 80%',
+        toggleActions: 'play none none none',
+      },
+    })
+  }
+}
+
+/* ── Product Card Hover Effects ─────────────────────────────────────────── */
+
+function initProductCardHovers() {
+  const cards = document.querySelectorAll('.product-card-v2')
+
+  cards.forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      gsap.to(card, {
+        scale: 1.03,
+        boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)',
+        duration: 0.4,
+        ease: 'power2.out',
+      })
+    })
+
+    card.addEventListener('mouseleave', () => {
+      gsap.to(card, {
+        scale: 1,
+        boxShadow: '0 0px 0px rgba(0, 0, 0, 0)',
+        duration: 0.35,
+        ease: 'power2.inOut',
+      })
+    })
+  })
+}
+
+/* ── Contact Form ───────────────────────────────────────────────────────── */
+
+function animateContactForm() {
+  const section = document.querySelector('.contact-section')
+  if (!section) return
+
+  const formBlock = section.querySelector('.contact-form-block')
+  if (!formBlock) return
+
+  // Form block entrance
+  gsap.set(formBlock, { opacity: 0, y: 50 })
+  gsap.to(formBlock, {
+    opacity: 1,
+    y: 0,
+    duration: 1,
+    ease: 'power3.out',
+    scrollTrigger: {
+      trigger: section,
+      start: 'top 75%',
+      toggleActions: 'play none none none',
+    },
+  })
+
+  // Title
+  const title = formBlock.querySelector('.contact-form-block__title')
+  if (title) {
+    gsap.set(title, { opacity: 0, y: 20 })
+    gsap.to(title, {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'power3.out',
+      delay: 0.2,
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 70%',
+        toggleActions: 'play none none none',
+      },
+    })
+  }
+
+  // Inputs: sequential stagger top → bottom
+  const inputs = formBlock.querySelectorAll('.form-field, .form-row')
+  if (inputs.length) {
+    gsap.set(inputs, { opacity: 0, y: 25 })
+    gsap.to(inputs, {
+      opacity: 1,
+      y: 0,
+      duration: 0.7,
+      ease: 'power2.out',
+      stagger: 0.1,
+      delay: 0.35,
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 70%',
+        toggleActions: 'play none none none',
+      },
+    })
+  }
+
+  // Divider
+  const divider = formBlock.querySelector('.form-divider')
+  if (divider) {
+    gsap.set(divider, { scaleX: 0, transformOrigin: 'left center' })
+    gsap.to(divider, {
+      scaleX: 1,
+      duration: 0.8,
+      ease: 'power2.inOut',
+      delay: 0.7,
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 70%',
+        toggleActions: 'play none none none',
+      },
+    })
+  }
+
+  // Submit button: elastic bounce entrance
+  const submitBtn = formBlock.querySelector('.btn-submit')
+  if (submitBtn) {
+    gsap.set(submitBtn, { opacity: 0, y: 30, scale: 0.9 })
+    gsap.to(submitBtn, {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      duration: 1,
+      ease: 'elastic.out(1, 0.5)',
+      delay: 0.85,
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 70%',
+        toggleActions: 'play none none none',
+      },
+    })
+  }
+}
+
 
 /* ── Zipper ──────────────────────────────────────────────────────────────── */
 
@@ -141,68 +407,46 @@ function initZipper() {
     const scrolled   = Math.max(0, -rect.top)
     const progress   = scrollable > 0 ? Math.min(1, scrolled / scrollable) : 0
 
-    // Phase 1 (0 → ZIPPER_RETRACT_AT): lens opens left→right
-    // Phase 2 (ZIPPER_RETRACT_AT → 1):  flaps retract off screen
     const lensP   = Math.min(1, progress / ZIPPER_RETRACT_AT)
     const sliderX = W * lensP
 
-    // Opening height at the LEFT edge — eased so it opens quickly
     const eased   = 1 - Math.pow(1 - lensP, 2)
     const maxOpen = H * ZIPPER_MAX_OPEN * eased
 
-    // ── KEY SHAPE: Opening is at the LEFT, closing at the SLIDER ──────────
-    //
-    //  Left edge (x=0):    gap = maxOpen  (fabric fully peeled away)
-    //  Slider (x=sliderX): gap = 0        (fabric still closed)
-    //
-    //  Top curve:  from (sliderX, CY)  →  curving UP  →  to (0, CY - maxOpen)
-    //  Bot curve:  from (sliderX, CY)  →  curving DOWN →  to (0, CY + maxOpen)
-    //
-    //  The control points shape the curve so it stays close to CY near the
-    //  slider (tight, just starting to peel) and sweeps open near the left
-    //  edge (fabric under full tension). This mimics real zipper fabric.
-
-    // Top arch: from slider (closed) → left edge (open upward)
     const tp0 = { x: sliderX,           y: CY }
-    const tp1 = { x: sliderX * 0.65,    y: CY - maxOpen * 0.05 }   // stays near CY close to slider
-    const tp2 = { x: sliderX * 0.20,    y: CY - maxOpen * 0.85 }   // swings up near left edge
-    const tp3 = { x: 0,                 y: CY - maxOpen }           // full opening at left
+    const tp1 = { x: sliderX * 0.65,    y: CY - maxOpen * 0.05 }
+    const tp2 = { x: sliderX * 0.20,    y: CY - maxOpen * 0.85 }
+    const tp3 = { x: 0,                 y: CY - maxOpen }
 
-    // Bottom arch: mirror of top
     const bp0 = { x: sliderX,           y: CY }
     const bp1 = { x: sliderX * 0.65,    y: CY + maxOpen * 0.05 }
     const bp2 = { x: sliderX * 0.20,    y: CY + maxOpen * 0.85 }
     const bp3 = { x: 0,                 y: CY + maxOpen }
 
-    // ── Top flap path ─────────────────────────────────────────────────────
-    // Covers: top-left corner → top-right corner → right side down to CY →
-    //         slider point (CY) → Bézier curve up to left edge → back to top-left
     const topD = [
-      `M 0 0`,                                               // top-left corner
-      `L ${W} 0`,                                             // top-right corner
-      `L ${W} ${CY}`,                                         // right edge at center
-      `L ${sliderX.toFixed(1)} ${CY}`,                        // horizontal seam to slider
-      `C ${tp1.x.toFixed(1)} ${tp1.y.toFixed(1)}`,           // curve from slider...
+      `M 0 0`,
+      `L ${W} 0`,
+      `L ${W} ${CY}`,
+      `L ${sliderX.toFixed(1)} ${CY}`,
+      `C ${tp1.x.toFixed(1)} ${tp1.y.toFixed(1)}`,
       `  ${tp2.x.toFixed(1)} ${tp2.y.toFixed(1)}`,
-      `  ${tp3.x.toFixed(1)} ${tp3.y.toFixed(1)}`,           // ...to left edge (open)
-      `L 0 0 Z`,                                              // up to top-left corner
+      `  ${tp3.x.toFixed(1)} ${tp3.y.toFixed(1)}`,
+      `L 0 0 Z`,
     ].join(' ')
     flapTop.setAttribute('d', topD)
 
-    // ── Bottom flap path ──────────────────────────────────────────────────
     const botD = [
-      `M 0 ${H}`,                                             // bottom-left corner
-      `L ${W} ${H}`,                                           // bottom-right corner
-      `L ${W} ${CY}`,                                          // right edge at center
-      `L ${sliderX.toFixed(1)} ${CY}`,                         // horizontal seam to slider
-      `C ${bp1.x.toFixed(1)} ${bp1.y.toFixed(1)}`,            // curve from slider...
+      `M 0 ${H}`,
+      `L ${W} ${H}`,
+      `L ${W} ${CY}`,
+      `L ${sliderX.toFixed(1)} ${CY}`,
+      `C ${bp1.x.toFixed(1)} ${bp1.y.toFixed(1)}`,
       `  ${bp2.x.toFixed(1)} ${bp2.y.toFixed(1)}`,
-      `  ${bp3.x.toFixed(1)} ${bp3.y.toFixed(1)}`,            // ...to left edge (open)
-      `L 0 ${H} Z`,                                            // down to bottom-left corner
+      `  ${bp3.x.toFixed(1)} ${bp3.y.toFixed(1)}`,
+      `L 0 ${H} Z`,
     ].join(' ')
     flapBot.setAttribute('d', botD)
 
-    // ── Seam: closed portion from slider to right edge ────────────────────
     const sx = sliderX.toFixed(1)
     if (seamEl) {
       seamEl.setAttribute('x1', sx)
@@ -217,7 +461,6 @@ function initZipper() {
       seamTintEl.setAttribute('y2', CY)
     }
 
-    // ── Teeth along the arch curves ───────────────────────────────────────
     if (lensP > 0.03 && maxOpen > 4) {
       drawTeeth(teethTopG, tp0, tp1, tp2, tp3, true)
       drawTeeth(teethBotG, bp0, bp1, bp2, bp3, false)
@@ -226,17 +469,13 @@ function initZipper() {
       teethBotG.innerHTML = ''
     }
 
-    // ── Slider: sits at the convergence point (sliderX, CY) ──────────────
     if (slider) {
       slider.style.transform =
         `translate(${(sliderX - 28).toFixed(1)}px, ${(CY - 19).toFixed(1)}px)`
     }
 
-    // ── Phase 2: flaps retract completely off screen ──────────────────────
-    // Top flap slides UP by CY px → its bottom edge (at CY) reaches y=0 → invisible.
-    // Bottom flap slides DOWN by (H-CY) px → its top edge (at CY) reaches y=H → invisible.
     const retractRaw  = Math.max(0, (progress - ZIPPER_RETRACT_AT) / (1 - ZIPPER_RETRACT_AT))
-    const retractEase = retractRaw * retractRaw   // ease-in for snappy finish
+    const retractEase = retractRaw * retractRaw
 
     if (retractEase > 0) {
       flapTop.style.transform = `translateY(${(-CY * retractEase).toFixed(1)}px)`
@@ -264,36 +503,4 @@ function initZipper() {
     if (!rafPending) { rafPending = true; requestAnimationFrame(update) }
   }, { passive: true })
   update()
-}
-
-/* ── Accessories carousel arrows ─────────────────────────────────────────── */
-
-function initAccessoriesArrows() {
-  const grid = document.querySelector('.accessories-grid')
-  const prev = document.querySelector('.acc-arrow--prev')
-  const next = document.querySelector('.acc-arrow--next')
-  if (!grid || !prev || !next) return
-
-  const scrollBy = () => grid.querySelector('.product-card')?.offsetWidth + 24 || 300
-
-  prev.addEventListener('click', () => grid.scrollBy({ left: -scrollBy(), behavior: 'smooth' }))
-  next.addEventListener('click', () => grid.scrollBy({ left:  scrollBy(), behavior: 'smooth' }))
-}
-
-/* ── Scroll reveal (IntersectionObserver) ────────────────────────────────── */
-
-function initScrollReveal() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('reveal--visible')
-        observer.unobserve(entry.target)
-      }
-    })
-  }, {
-    threshold:  0.12,
-    rootMargin: '0px 0px -48px 0px',
-  })
-
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
 }
