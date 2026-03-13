@@ -65,13 +65,15 @@
 
 /* ── Logo — bold, white, chunky like MANA ─────────────────────────────── */
 .nav-logo {
-  font-family: var(--font-ui);
-  font-size: clamp(1.2rem, 2.2vw, 1.65rem);
-  font-weight: 800;
-  letter-spacing: 0.22em;
-  color: #ffffff;
-  text-transform: uppercase;
+  display: flex;
+  align-items: center;
   line-height: 1;
+}
+
+.nav-logo-img {
+  height: clamp(28px, 4vw, 44px);
+  width: auto;
+  display: block;
 }
 
 
