@@ -21,7 +21,7 @@ export function createRenderer(containerId = 'canvas-container') {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
   renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.toneMapping = THREE.ACESFilmicToneMapping
-  renderer.toneMappingExposure = 1.1
+  renderer.toneMappingExposure = 1.35
 
   container.appendChild(renderer.domElement)
   return renderer

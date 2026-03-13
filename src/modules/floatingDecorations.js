@@ -1,23 +1,16 @@
 /**
  * modules/floatingDecorations.js
  *
- * Floating decoration images around the 3D bag model.
+ * Geometric pattern grids behind each 3D bag model.
  *
- * Layout rules:
- *   2 images → diagonal composition (one upper-side, one lower-opposite)
- *   3 images → triangular composition (solo big on one side, pair spread on other)
+ * Each bag gets a unique, visually ordered pattern:
+ *   classic (green)  → squares grid
+ *   rouge   (red)    → triangles grid
+ *   rose    (pink)   → circles grid
+ *   cobalt  (blue)   → diamonds grid
  *
- * Model → images mapping:
- *   classic (green)  → flower (solo right big) | lemon + banana (spread left)
- *   rouge   (red)    → rocket (solo left big)  | astronaut + apple (spread right)
- *   cobalt  (blue)   → human (upper-left) | human2 (lower-right)  — diagonal
- *   rose    (pink)   → flamingo (lower-left) | star (upper-right)  — diagonal
- *
- * Positioning strategy:
- *   - Center zone (±18vw) always clear for 3D bag
- *   - Decorations pushed to screen edges for visual breathing room
- *   - Vertical offsets create dynamic, non-symmetrical compositions
- *   - 3-item layouts form a triangle wrapping around the bag
+ * Patterns are black at ~25% opacity, tiled in a consistent grid.
+ * Subtle mouse-follow parallax gives depth.
  */
 
 import { gsap }          from 'gsap'
@@ -25,101 +18,180 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-// scale: 1 = default CSS size, 1.6 = 60% bigger, etc.
-// baseX/baseY position from center of viewport
-const DECORATION_MAP = {
-  classic: [
-    // Solo right — BIG, vertically centered
-    { src: '/img/flower.png', baseX: '33vw',  baseY: '2vh',    scale: 1.5 },
-    // Upper-left — pushed to corner
-    { src: '/img/lemon.png',  baseX: '-35vw', baseY: '-22vh',  scale: 0.95 },
-    // Lower-left — offset from lemon for triangle feel
-    { src: '/img/banana.png', baseX: '-28vw', baseY: '24vh',   scale: 0.85 },
-  ],
-  rouge: [
-    // Solo left — BIG, vertically centered
-    { src: '/img/rocket.png',    baseX: '-33vw', baseY: '2vh',    scale: 1.5 },
-    // Upper-right — pushed to corner
-    { src: '/img/astronaut.png', baseX: '30vw',  baseY: '-20vh',  scale: 0.95 },
-    // Lower-right — offset from astronaut for triangle
-    { src: '/img/apple.png',     baseX: '35vw',  baseY: '22vh',   scale: 0.8 },
-  ],
-  cobalt: [
-    // Diagonal composition: upper-left to lower-right
-    { src: '/img/human.png',  baseX: '-33vw', baseY: '-10vh', scale: 1.4 },
-    { src: '/img/human2.png', baseX: '33vw',  baseY: '10vh',  scale: 1.4 },
-  ],
-  rose: [
-    // Diagonal composition: lower-left to upper-right
-    { src: '/img/flamingo.png', baseX: '-33vw', baseY: '10vh',  scale: 1.4 },
-    { src: '/img/star.png',     baseX: '33vw',  baseY: '-10vh', scale: 1.4 },
-  ],
+/* ── Pattern config per model ───────────────────────────────────────────── */
+
+const PATTERN_MAP = {
+  classic:  'squares',
+  rouge:    'diamonds',
+  rose:     'circles',
+  cobalt:   'diamonds',
 }
+
+/* ── SVG pattern builders ───────────────────────────────────────────────── */
+// Each returns an SVG string for a repeating tile
+
+function buildSquaresSVG() {
+  // 6×6 grid of rounded squares
+  const size = 28
+  const gap = 12
+  const step = size + gap
+  const cols = 8, rows = 8
+  const w = cols * step, h = rows * step
+  let rects = ''
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      rects += `<rect x="${c * step + gap / 2}" y="${r * step + gap / 2}" width="${size}" height="${size}" rx="4" fill="black" opacity="0.10"/>`
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${rects}</svg>`
+}
+
+function buildTrianglesSVG() {
+  // Rows of equilateral triangles, alternating up/down
+  const size = 36
+  const h = size * 0.866
+  const cols = 9, rows = 9
+  const w = cols * size, totalH = rows * h
+  let polys = ''
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const x = c * size + (r % 2 === 0 ? 0 : size / 2)
+      const y = r * h
+      if ((r + c) % 2 === 0) {
+        // Up triangle
+        polys += `<polygon points="${x},${y + h} ${x + size / 2},${y} ${x + size},${y + h}" fill="black" opacity="0.10"/>`
+      } else {
+        // Down triangle
+        polys += `<polygon points="${x},${y} ${x + size / 2},${y + h} ${x + size},${y}" fill="black" opacity="0.10"/>`
+      }
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${totalH}" viewBox="0 0 ${w} ${totalH}">${polys}</svg>`
+}
+
+function buildCirclesSVG() {
+  // Evenly spaced circles in a grid
+  const radius = 12
+  const gap = 16
+  const step = radius * 2 + gap
+  const cols = 8, rows = 8
+  const w = cols * step, h = rows * step
+  let circles = ''
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      circles += `<circle cx="${c * step + step / 2}" cy="${r * step + step / 2}" r="${radius}" fill="black" opacity="0.10"/>`
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${circles}</svg>`
+}
+
+function buildDiamondsSVG() {
+  // Grid of rotated squares (diamonds)
+  const size = 22
+  const gap = 14
+  const step = size + gap
+  const cols = 8, rows = 8
+  const w = cols * step, h = rows * step
+  let diamonds = ''
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const cx = c * step + step / 2
+      const cy = r * step + step / 2
+      const half = size / 2
+      diamonds += `<polygon points="${cx},${cy - half} ${cx + half},${cy} ${cx},${cy + half} ${cx - half},${cy}" fill="black" opacity="0.10"/>`
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${diamonds}</svg>`
+}
+
+const SVG_BUILDERS = {
+  squares:   buildSquaresSVG,
+  triangles: buildTrianglesSVG,
+  circles:   buildCirclesSVG,
+  diamonds:  buildDiamondsSVG,
+}
+
+/* ── FloatingDecorations class ──────────────────────────────────────────── */
 
 export class FloatingDecorations {
   constructor() {
     this._container = document.getElementById('floating-decorations')
     this._currentId  = null
-    this._elements   = []     // current DOM <img> elements
+    this._patternEl  = null
     this._scrollTrigger = null
     this._expandProgress = 0
+    this._mouseX = 0
+    this._mouseY = 0
+    this._rafId  = null
+
+    // Track mouse for subtle parallax
+    this._onMouseMove = (e) => {
+      this._mouseX = (e.clientX / window.innerWidth - 0.5) * 2   // -1 to 1
+      this._mouseY = (e.clientY / window.innerHeight - 0.5) * 2  // -1 to 1
+    }
+    document.addEventListener('mousemove', this._onMouseMove, { passive: true })
+    this._startParallaxLoop()
   }
 
-  /** Show decorations for a given model id (e.g. 'classic') */
+  _startParallaxLoop() {
+    let currentOpacity = 1
+    const tick = () => {
+      if (this._patternEl) {
+        const tx = this._mouseX * 8   // max 8px shift
+        const ty = this._mouseY * 8
+        this._patternEl.style.transform = `translate(${tx}px, ${ty}px)`
+
+        // Mouse proximity → subtle darkening (10% base → 15% on hover)
+        // When mouse is near center, darken more
+        const dist = Math.sqrt(this._mouseX * this._mouseX + this._mouseY * this._mouseY)
+        const targetOpacity = dist < 0.8 ? 1.5 : 1  // 1.5x = from 10% to 15%
+        currentOpacity += (targetOpacity - currentOpacity) * 0.05  // smooth lerp
+        this._patternEl.style.filter = `brightness(${currentOpacity})`
+      }
+      this._rafId = requestAnimationFrame(tick)
+    }
+    this._rafId = requestAnimationFrame(tick)
+  }
+
+  /** Show pattern for a given model id */
   show(modelId) {
     if (modelId === this._currentId) return
     this._currentId = modelId
 
-    // Fade out existing
-    this._elements.forEach(el => el.classList.remove('is-visible'))
+    // Fade out existing pattern
+    if (this._patternEl) {
+      const old = this._patternEl
+      old.classList.remove('is-visible')
+      setTimeout(() => old.remove(), 650)
+    }
 
-    // Remove old after transition
-    const oldEls = [...this._elements]
-    setTimeout(() => oldEls.forEach(el => el.remove()), 650)
+    const patternType = PATTERN_MAP[modelId]
+    if (!patternType) { this._patternEl = null; return }
 
-    // Create new
-    const items = DECORATION_MAP[modelId]
-    if (!items) { this._elements = []; return }
+    const builder = SVG_BUILDERS[patternType]
+    if (!builder) { this._patternEl = null; return }
 
-    this._elements = items.map((item, i) => {
-      const img = document.createElement('img')
-      img.className = `float-img float-img--${i}`
-      img.src = item.src
-      img.alt = ''
-      img.draggable = false
+    // Create SVG pattern element
+    const svgString = builder()
+    const encoded = 'data:image/svg+xml,' + encodeURIComponent(svgString)
 
-      // Position from center of screen
-      img.style.left = '50%'
-      img.style.top  = '50%'
-      img.style.setProperty('--fx', item.baseX)
-      img.style.setProperty('--fy', item.baseY)
+    const el = document.createElement('div')
+    el.className = 'pattern-grid'
+    el.style.backgroundImage = `url("${encoded}")`
+    el.style.backgroundRepeat = 'repeat'
+    el.style.backgroundPosition = 'center center'
 
-      // Individual scale
-      if (item.scale && item.scale !== 1) {
-        img.style.setProperty('--img-scale', item.scale)
-      }
+    this._container.appendChild(el)
+    this._patternEl = el
 
-      // Initial translate uses CSS custom properties via animation
-      img.style.transform = `translate(${item.baseX}, ${item.baseY})`
-
-      this._container.appendChild(img)
-
-      // Trigger reflow then show
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => img.classList.add('is-visible'))
-      })
-
-      return img
+    // Trigger reflow then show
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => el.classList.add('is-visible'))
     })
-
-    // Re-apply current scroll expansion
-    this._applyExpansion(this._expandProgress)
   }
 
-  /** Initialize scroll-driven expansion from hero through scroll-stage */
+  /** Initialize scroll-driven behavior */
   initScroll() {
-    // Expansion: images drift outward as user scrolls down
-    // from scroll-stage start until features-orbit appears
     this._scrollTrigger = ScrollTrigger.create({
       trigger: '#scroll-stage',
       start:   'top bottom',
@@ -127,11 +199,10 @@ export class FloatingDecorations {
       scrub:   1.5,
       onUpdate: (self) => {
         this._expandProgress = self.progress
-        this._applyExpansion(self.progress)
       },
     })
 
-    // Fade out decorations when orbit section enters
+    // Fade out patterns when orbit section enters
     ScrollTrigger.create({
       trigger: '.features-scroll-track',
       start:   'top 90%',
@@ -148,32 +219,6 @@ export class FloatingDecorations {
     })
   }
 
-  /**
-   * Apply expansion based on scroll progress (0 → 1).
-   * Each image drifts further to its side.
-   */
-  _applyExpansion(p) {
-    const items = DECORATION_MAP[this._currentId]
-    if (!items || !this._elements.length) return
-
-    // Eased expansion factor — accelerates slightly
-    const ease = p * p * 0.8 + p * 0.2  // gentle ease-in
-
-    this._elements.forEach((el, i) => {
-      const item = items[i]
-      if (!item || !el) return
-
-      // Parse the base position to determine direction
-      const isLeft = item.baseX.startsWith('-')
-
-      // Expand outward: add extra vw in the direction of the image
-      const extraX = isLeft ? -ease * 12 : ease * 12  // up to ±12vw extra
-
-      el.style.setProperty('--fx', `calc(${item.baseX} + ${extraX}vw)`)
-      el.style.setProperty('--fy', item.baseY)
-    })
-  }
-
   /** Call on model switch */
   switchToModel(modelId) {
     this.show(modelId)
@@ -181,7 +226,9 @@ export class FloatingDecorations {
 
   dispose() {
     if (this._scrollTrigger) this._scrollTrigger.kill()
-    this._elements.forEach(el => el.remove())
-    this._elements = []
+    if (this._rafId) cancelAnimationFrame(this._rafId)
+    document.removeEventListener('mousemove', this._onMouseMove)
+    if (this._patternEl) this._patternEl.remove()
+    this._patternEl = null
   }
 }

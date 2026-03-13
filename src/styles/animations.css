@@ -17,7 +17,7 @@
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   FLOATING DECORATIONS — subtle floating images around 3D model
+   FLOATING DECORATIONS — geometric pattern grids behind 3D model
    ═══════════════════════════════════════════════════════════════════════════ */
 
 #floating-decorations {
@@ -28,48 +28,15 @@
   overflow: hidden;
 }
 
-.float-img {
+.pattern-grid {
   position: absolute;
-  --img-scale: 1;
-  width: calc(clamp(180px, 24vw, 320px) * var(--img-scale));
-  height: auto;
+  inset: -20px;                    /* slight overflow for parallax movement */
   opacity: 0;
-  transition: opacity 1s ease;
+  transition: opacity 0.8s ease;
   will-change: transform;
-  animation-delay: 0.8s !important;
-  animation-fill-mode: backwards !important;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
-  /* Center the image on its translate point */
-  margin-left: calc(-0.5 * clamp(180px, 24vw, 320px) * var(--img-scale));
-  margin-top:  calc(-0.5 * clamp(180px, 24vw, 320px) * var(--img-scale));
+  background-size: auto;
 }
 
-.float-img.is-visible {
+.pattern-grid.is-visible {
   opacity: 1;
-}
-
-/* Each image gets a unique float animation with different timing */
-.float-img--0 { animation: floatA 5s ease-in-out infinite; }
-.float-img--1 { animation: floatB 5.8s ease-in-out infinite; }
-.float-img--2 { animation: floatC 5.3s ease-in-out infinite; }
-
-@keyframes floatA {
-  0%, 100% { transform: translate(var(--fx, 0), var(--fy, 0)) rotate(0deg); }
-  25%      { transform: translate(var(--fx, 0), calc(var(--fy, 0) - 10px)) rotate(2deg); }
-  50%      { transform: translate(calc(var(--fx, 0) + 5px), calc(var(--fy, 0) - 16px)) rotate(-1.5deg); }
-  75%      { transform: translate(calc(var(--fx, 0) - 3px), calc(var(--fy, 0) - 7px)) rotate(1.5deg); }
-}
-
-@keyframes floatB {
-  0%, 100% { transform: translate(var(--fx, 0), var(--fy, 0)) rotate(0deg); }
-  30%      { transform: translate(calc(var(--fx, 0) + 7px), calc(var(--fy, 0) - 12px)) rotate(-3deg); }
-  60%      { transform: translate(calc(var(--fx, 0) - 4px), calc(var(--fy, 0) - 18px)) rotate(2deg); }
-  80%      { transform: translate(calc(var(--fx, 0) + 2px), calc(var(--fy, 0) - 5px)) rotate(-1deg); }
-}
-
-@keyframes floatC {
-  0%, 100% { transform: translate(var(--fx, 0), var(--fy, 0)) rotate(0deg); }
-  20%      { transform: translate(calc(var(--fx, 0) - 6px), calc(var(--fy, 0) - 8px)) rotate(3deg); }
-  55%      { transform: translate(calc(var(--fx, 0) + 8px), calc(var(--fy, 0) - 14px)) rotate(-2deg); }
-  85%      { transform: translate(calc(var(--fx, 0) - 2px), calc(var(--fy, 0) - 19px)) rotate(1.5deg); }
 }

@@ -30,25 +30,30 @@ export class ModelManager {
   // ── Lights ────────────────────────────────────────────────────────────────
 
   _setupLights() {
-    this.ambientLight = new THREE.AmbientLight(0xffffff, 0.9)
+    this.ambientLight = new THREE.AmbientLight(0xffffff, 1.15)
     this.scene.add(this.ambientLight)
 
-    this.keyLight = new THREE.DirectionalLight(0xfff8e0, 1.2)
+    this.keyLight = new THREE.DirectionalLight(0xfff8e0, 1.7)
     this.keyLight.position.set(3, 6, 5)
     this.keyLight.castShadow = true
     this.keyLight.shadow.mapSize.width  = 1024
     this.keyLight.shadow.mapSize.height = 1024
     this.scene.add(this.keyLight)
 
-    this.fillLight = new THREE.DirectionalLight(0xa0d090, 0.5)
+    this.fillLight = new THREE.DirectionalLight(0xa0d090, 0.85)
     this.fillLight.position.set(-4, 2, -3)
     this.scene.add(this.fillLight)
 
-    this.rimLight = new THREE.DirectionalLight(0xffffff, 0.35)
+    this.rimLight = new THREE.DirectionalLight(0xffffff, 0.6)
     this.rimLight.position.set(0, -2, -4)
     this.scene.add(this.rimLight)
 
-    this.lights = [this.ambientLight, this.keyLight, this.fillLight, this.rimLight]
+    // Extra top light for color pop
+    this.topLight = new THREE.DirectionalLight(0xffffff, 0.5)
+    this.topLight.position.set(0, 8, 0)
+    this.scene.add(this.topLight)
+
+    this.lights = [this.ambientLight, this.keyLight, this.fillLight, this.rimLight, this.topLight]
   }
 
   _adaptLightsToConfig(config) {
@@ -89,7 +94,15 @@ export class ModelManager {
             if (child.isMesh) {
               child.castShadow = true
               child.receiveShadow = true
-              if (child.material) child.material.envMapIntensity = 0.6
+              if (child.material) {
+                child.material.envMapIntensity = 1.0
+                // Boost saturation on MeshStandardMaterial colors
+                if (child.material.color) {
+                  const hsl = {}
+                  child.material.color.getHSL(hsl)
+                  child.material.color.setHSL(hsl.h, Math.min(1, hsl.s * 1.3), hsl.l)
+                }
+              }
             }
           })
           this.cache.set(config.id, model)
